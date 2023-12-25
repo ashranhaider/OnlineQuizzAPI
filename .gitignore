@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/OnlineQuizzAPI/.vs/OnlineQuizzAPI
+/OnlineQuizzAPI/OnlineQuizzAPI/.config
+/OnlineQuizzAPI/OnlineQuizzAPI/bin/Debug/net6.0
+/OnlineQuizzAPI/OnlineQuizzAPI/obj
+/OnlineQuizzAPI/OnlineQuizzAPI/Properties/launchSettings.json
