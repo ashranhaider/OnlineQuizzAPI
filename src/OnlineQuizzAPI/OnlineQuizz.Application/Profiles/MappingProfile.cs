@@ -8,6 +8,9 @@ using OnlineQuizz.Application.Features.Events.Queries.GetEventDetail;
 using OnlineQuizz.Application.Features.Events.Queries.GetEventsExport;
 using OnlineQuizz.Application.Features.Events.Queries.GetEventsList;
 using OnlineQuizz.Application.Features.Orders.GetOrdersForMonth;
+using OnlineQuizz.Application.Features.Quizzes.Commands.CreateQuizz;
+using OnlineQuizz.Application.Features.Quizzes.Commands.UpdateQuizz;
+using OnlineQuizz.Application.Features.Quizzes.Queries.GetQuizzesList;
 using OnlineQuizz.Domain.Entities;
 
 namespace OnlineQuizz.Application.Profiles
@@ -30,6 +33,11 @@ namespace OnlineQuizz.Application.Profiles
             CreateMap<Category, CreateCategoryDto>();
 
             CreateMap<Order, OrdersForMonthDto>();
+
+
+            CreateMap<Quizz, GetQuizzVM>().ReverseMap();
+            CreateMap<Quizz, CreateQuizzCommand>().ReverseMap();
+            CreateMap<Quizz, UpdateQuizzCommand>().ReverseMap();
         }
     }
 }

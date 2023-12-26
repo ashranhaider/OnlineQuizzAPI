@@ -17,6 +17,11 @@ namespace OnlineQuizz.Persistence.Repositories
             T? t = await _dbContext.Set<T>().FindAsync(id);
             return t;
         }
+        public virtual async Task<T?> GetByIdAsync(int id)
+        {
+            T? t = await _dbContext.Set<T>().FindAsync(id);
+            return t;
+        }
 
         public async Task<IReadOnlyList<T>> ListAllAsync()
         {
