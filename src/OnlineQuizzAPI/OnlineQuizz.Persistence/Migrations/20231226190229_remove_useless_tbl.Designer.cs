@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnlineQuizz.Persistence;
 
@@ -11,9 +12,10 @@ using OnlineQuizz.Persistence;
 namespace OnlineQuizz.Persistence.Migrations
 {
     [DbContext(typeof(OnlineQuizzDbContext))]
-    partial class GloboTicketDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231226190229_remove_useless_tbl")]
+    partial class remove_useless_tbl
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
