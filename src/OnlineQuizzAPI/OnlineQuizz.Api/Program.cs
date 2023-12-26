@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog((context, loggerConfiguration) => loggerConfiguration
      .WriteTo.Console()
-     .ReadFrom.Configuration(context.Configuration));
+     .ReadFrom.Configuration(context.Configuration), true);
 
 var app = builder
        .ConfigureServices()

@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using OnlineQuizz.Application.Contracts.Persistence;
-using OnlineQuizz.Application.Features.Events.Commands.UpdateEvent;
 using OnlineQuizz.Application.Features.Quizzes.Commands.CreateQuizz;
 using System;
 using System.Collections.Generic;

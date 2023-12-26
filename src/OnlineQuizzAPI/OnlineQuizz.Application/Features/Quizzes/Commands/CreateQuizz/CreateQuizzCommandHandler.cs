@@ -4,7 +4,6 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using OnlineQuizz.Application.Contracts.Infrastructure;
 using OnlineQuizz.Application.Contracts.Persistence;
-using OnlineQuizz.Application.Features.Events.Commands.CreateEvent;
 using OnlineQuizz.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -16,15 +15,13 @@ namespace OnlineQuizz.Application.Features.Quizzes.Commands.CreateQuizz
 {
     public class CreateQuizzCommandHandler : IRequestHandler<CreateQuizzCommand, int>
     {
-        private readonly IQuizzRepository _quizzRepository;
+        private readonly IAsyncRepository<Quizz> _quizzRepository;
         private readonly IMapper _mapper;
-        private readonly ILogger<CreateEventCommandHandler> _logger;
 
-        public CreateQuizzCommandHandler(IMapper mapper, IQuizzRepository quizzRepository, ILogger<CreateEventCommandHandler> logger)
+        public CreateQuizzCommandHandler(IMapper mapper, IAsyncRepository<Quizz> quizzRepository)
         {
             _mapper = mapper;
             _quizzRepository = quizzRepository;
-            _logger = logger;
         }
 
         public async Task<int> Handle(CreateQuizzCommand request, CancellationToken cancellationToken)

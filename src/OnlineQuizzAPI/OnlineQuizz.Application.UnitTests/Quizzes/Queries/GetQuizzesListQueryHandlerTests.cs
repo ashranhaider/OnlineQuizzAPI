@@ -1,22 +1,22 @@
 ﻿using AutoMapper;
 using OnlineQuizz.Application.Contracts.Persistence;
-using OnlineQuizz.Application.Features.Categories.Queries.GetCategoriesList;
 using OnlineQuizz.Application.Profiles;
 using OnlineQuizz.Application.UnitTests.Mocks;
 using OnlineQuizz.Domain.Entities;
 using Moq;
 using Shouldly;
+using OnlineQuizz.Application.Features.Quizzes.Queries.GetQuizzesList;
 
 namespace OnlineQuizz.Application.UnitTests.Categories.Queries
 {
     public class GetCategoriesListQueryHandlerTests
     {
         private readonly IMapper _mapper;
-        private readonly Mock<IAsyncRepository<Category>> _mockCategoryRepository;
+        private readonly Mock<IAsyncRepository<Quizz>> _mockQuizzRepository;
 
         public GetCategoriesListQueryHandlerTests()
         {
-            _mockCategoryRepository = RepositoryMocks.GetCategoryRepository();
+            _mockQuizzRepository = RepositoryMocks.GetQuizzRepository();
             var configurationProvider = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile<MappingProfile>();
@@ -26,13 +26,13 @@ namespace OnlineQuizz.Application.UnitTests.Categories.Queries
         }
 
         [Fact]
-        public async Task GetCategoriesListTest()
+        public async Task GetQuizzesListTest()
         {
-            var handler = new GetCategoriesListQueryHandler(_mapper, _mockCategoryRepository.Object);
+            var handler = new GetQuizzesQueryHandler(_mapper, _mockQuizzRepository.Object);
 
-            var result = await handler.Handle(new GetCategoriesListQuery(), CancellationToken.None);
+            var result = await handler.Handle(new GetQuizzesQuery(), CancellationToken.None);
 
-            result.ShouldBeOfType<List<CategoryListVm>>();
+            result.ShouldBeOfType<List<GetQuizzVM>>();
 
             result.Count.ShouldBe(4);
         }

@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using OnlineQuizz.Application.Features.Events.Queries.GetEventsList;
 using System;
 using System.Collections.Generic;
 using System.Linq;

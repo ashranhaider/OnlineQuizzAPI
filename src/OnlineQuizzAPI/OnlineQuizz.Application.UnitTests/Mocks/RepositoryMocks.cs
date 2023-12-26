@@ -6,48 +6,44 @@ namespace OnlineQuizz.Application.UnitTests.Mocks
 {
     public class RepositoryMocks
     {
-        public static Mock<IAsyncRepository<Category>> GetCategoryRepository()
+        public static Mock<IAsyncRepository<Quizz>> GetQuizzRepository()
         {
-            var concertGuid = Guid.Parse("{B0788D2F-8003-43C1-92A4-EDC76A7C5DDE}");
-            var musicalGuid = Guid.Parse("{6313179F-7837-473A-A4D5-A5571B43E6A6}");
-            var playGuid = Guid.Parse("{BF3F3002-7E53-441E-8B76-F6280BE284AA}");
-            var conferenceGuid = Guid.Parse("{FE98F549-E790-4E9F-AA16-18C2292A2EE9}");
-
-            var categories = new List<Category>
+            
+            var categories = new List<Quizz>
             {
-                new Category
+                new Quizz
                 {
-                    CategoryId = concertGuid,
+                    Id = 1,
                     Name = "Concerts"
                 },
-                new Category
+                new Quizz
                 {
-                    CategoryId = musicalGuid,
+                    Id = 2,
                     Name = "Musicals"
                 },
-                new Category
+                new Quizz
                 {
-                    CategoryId = conferenceGuid,
+                    Id = 3,
                     Name = "Conferences"
                 },
-                 new Category
+                 new Quizz
                 {
-                    CategoryId = playGuid,
+                    Id = 4,
                     Name = "Plays"
                 }
             };
 
-            var mockCategoryRepository = new Mock<IAsyncRepository<Category>>();
-            mockCategoryRepository.Setup(repo => repo.ListAllAsync()).ReturnsAsync(categories);
+            var mockQuizzRepository = new Mock<IAsyncRepository<Quizz>>();
+            mockQuizzRepository.Setup(repo => repo.ListAllAsync()).ReturnsAsync(categories);
 
-            mockCategoryRepository.Setup(repo => repo.AddAsync(It.IsAny<Category>())).ReturnsAsync(
-                (Category category) =>
+            mockQuizzRepository.Setup(repo => repo.AddAsync(It.IsAny<Quizz>())).ReturnsAsync(
+                (Quizz Quizz) =>
                 {
-                    categories.Add(category);
-                    return category;
+                    categories.Add(Quizz);
+                    return Quizz;
                 });
 
-            return mockCategoryRepository;
+            return mockQuizzRepository;
         }
     }
 }

@@ -17,4 +17,8 @@
 		<ProjectReference Include="..\OnlineQuizz.Application\OnlineQuizz.Application.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="FileExport\" />
+	</ItemGroup>
+
 </Project>

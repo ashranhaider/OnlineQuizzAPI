@@ -1,7 +1,5 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using OnlineQuizz.Application.Features.Categories.Commands.CreateCateogry;
-using OnlineQuizz.Application.Features.Orders.GetOrdersForMonth;
 using OnlineQuizz.Application.Features.Quizzes.Commands.CreateQuizz;
 using OnlineQuizz.Application.Features.Quizzes.Commands.DeleteQuizz;
 using OnlineQuizz.Application.Features.Quizzes.Commands.UpdateQuizz;
@@ -33,7 +31,7 @@ namespace OnlineQuizz.Api.Controllers
             var response = await _mediator.Send(updateQuizzCommand);
             return Ok(response);
         }
-        [HttpGet("/GetQuizzes", Name = "GetQuizzes")]
+        [HttpGet("All", Name = "GetQuizzes")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesDefaultResponseType]
         public async Task<ActionResult<GetQuizzVM>> GetQuizzes()

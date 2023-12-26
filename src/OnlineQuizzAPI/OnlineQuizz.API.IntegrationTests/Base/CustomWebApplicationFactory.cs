@@ -17,7 +17,7 @@ namespace OnlineQuizz.API.IntegrationTests.Base
 
                 services.AddDbContext<OnlineQuizzDbContext>(options =>
                 {
-                    options.UseInMemoryDatabase("GloboTicketDbContextInMemoryTest");
+                    options.UseInMemoryDatabase("OnlineQuizzDbContextInMemoryTest");
                 });
 
                 var sp = services.BuildServiceProvider();

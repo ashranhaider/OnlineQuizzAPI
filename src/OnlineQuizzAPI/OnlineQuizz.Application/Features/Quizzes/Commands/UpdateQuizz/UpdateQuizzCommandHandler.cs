@@ -4,7 +4,6 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using OnlineQuizz.Application.Contracts.Infrastructure;
 using OnlineQuizz.Application.Contracts.Persistence;
-using OnlineQuizz.Application.Features.Events.Commands.UpdateEvent;
 using OnlineQuizz.Application.Features.Quizzes.Commands.CreateQuizz;
 using OnlineQuizz.Domain.Entities;
 using System;
@@ -19,9 +18,9 @@ namespace OnlineQuizz.Application.Features.Quizzes.Commands.UpdateQuizz
     {
         private readonly IQuizzRepository _quizzRepository;
         private readonly IMapper _mapper;
-        private readonly ILogger<UpdateEventCommandHandler> _logger;
+        private readonly ILogger<UpdateQuizzCommandHandler> _logger;
 
-        public UpdateQuizzCommandHandler(IMapper mapper, IQuizzRepository quizzRepository, ILogger<UpdateEventCommandHandler> logger)
+        public UpdateQuizzCommandHandler(IMapper mapper, IQuizzRepository quizzRepository, ILogger<UpdateQuizzCommandHandler> logger)
         {
             _mapper = mapper;
             _quizzRepository = quizzRepository;

@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using OnlineQuizz.Application.Contracts.Persistence;
-using OnlineQuizz.Application.Features.Events.Commands.DeleteEvent;
 using System;
 using System.Collections.Generic;
 using System.Linq;

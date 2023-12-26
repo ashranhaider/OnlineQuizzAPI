@@ -6,13 +6,13 @@ using Shouldly;
 
 namespace OnlineQuizz.Persistence.IntegrationTests
 {
-    public class GloboTicketDbContextTests
+    public class OnlineQuizzDbContextTests
     {
-        private readonly OnlineQuizzDbContext _globoTicketDbContext;
+        private readonly OnlineQuizzDbContext _onlineQuizzDbContext;
         private readonly Mock<ILoggedInUserService> _loggedInUserServiceMock;
         private readonly string _loggedInUserId;
 
-        public GloboTicketDbContextTests()
+        public OnlineQuizzDbContextTests()
         {
             var dbContextOptions = new DbContextOptionsBuilder<OnlineQuizzDbContext>().UseInMemoryDatabase(Guid.NewGuid().ToString()).Options;
 
@@ -20,18 +20,18 @@ namespace OnlineQuizz.Persistence.IntegrationTests
             _loggedInUserServiceMock = new Mock<ILoggedInUserService>();
             _loggedInUserServiceMock.Setup(m => m.UserId).Returns(_loggedInUserId);
 
-            _globoTicketDbContext = new OnlineQuizzDbContext(dbContextOptions, _loggedInUserServiceMock.Object);
+            _onlineQuizzDbContext = new OnlineQuizzDbContext(dbContextOptions, _loggedInUserServiceMock.Object);
         }
 
         [Fact]
         public async void Save_SetCreatedByProperty()
         {
-            var ev = new Event() {EventId = Guid.NewGuid(), Name = "Test event" };
+            var quizz = new Quizz() {Id = 1, Name = "Test quizz" };
 
-            _globoTicketDbContext.Events.Add(ev);
-            await _globoTicketDbContext.SaveChangesAsync();
+            _onlineQuizzDbContext.Quizzes.Add(quizz);
+            await _onlineQuizzDbContext.SaveChangesAsync();
 
-            ev.CreatedBy.ShouldBe(_loggedInUserId);
+            quizz.CreatedBy.ShouldBe(_loggedInUserId);
         }
     }
 }
