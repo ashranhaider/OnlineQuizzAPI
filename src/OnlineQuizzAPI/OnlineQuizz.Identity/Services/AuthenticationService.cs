@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Linq;
 
 namespace OnlineQuizz.Identity.Services
 {
@@ -84,7 +85,7 @@ namespace OnlineQuizz.Identity.Services
                 }
                 else
                 {
-                    throw new Exception($"{result.Errors}");
+                    throw new Exception($"{String.Join(",", result.Errors)}");
                 }
             }
             else
