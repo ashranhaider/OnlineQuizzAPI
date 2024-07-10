@@ -27,4 +27,8 @@
 	  <ProjectReference Include="..\OnlineQuizz.Domain\OnlineQuizz.Domain.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Enums\" />
+	</ItemGroup>
+
 </Project>

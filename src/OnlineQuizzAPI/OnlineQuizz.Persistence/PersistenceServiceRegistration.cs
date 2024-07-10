@@ -16,6 +16,7 @@ namespace OnlineQuizz.Persistence
             services.AddScoped(typeof(IAsyncRepository<>), typeof(BaseRepository<>));
 
             services.AddScoped<IQuizzRepository, QuizzRepository>();
+            services.AddScoped<IQuestionRepository, QuestionRepository>();
 
             return services;    
         }

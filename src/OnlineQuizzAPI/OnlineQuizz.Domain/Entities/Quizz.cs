@@ -10,7 +10,8 @@ namespace OnlineQuizz.Domain.Entities
     public class Quizz : AuditableEntity
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string Name { get; set; } = String.Empty;
         public bool IsActive { get; set; }
+        public virtual ICollection<Question>? Questions { get; set; }
     }
 }

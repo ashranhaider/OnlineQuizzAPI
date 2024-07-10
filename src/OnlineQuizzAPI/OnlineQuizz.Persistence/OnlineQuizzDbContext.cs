@@ -8,11 +8,8 @@ namespace OnlineQuizz.Persistence
     public class OnlineQuizzDbContext: DbContext
     {
         private readonly ILoggedInUserService? _loggedInUserService;
-
-        //public GloboTicketDbContext(DbContextOptions<GloboTicketDbContext> options)
-        //   : base(options)
-        //{
-        //}
+        public DbSet<Quizz>? Quizzes { get; set; }
+        public DbSet<Question>? Questions { get; set; }
 
         public OnlineQuizzDbContext(DbContextOptions<OnlineQuizzDbContext> options, ILoggedInUserService loggedInUserService)
             : base(options)
@@ -20,7 +17,6 @@ namespace OnlineQuizz.Persistence
             _loggedInUserService = loggedInUserService;
         }
 
-        public DbSet<Quizz> Quizzes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -63,11 +59,11 @@ namespace OnlineQuizz.Persistence
                 {
                     case EntityState.Added:
                         entry.Entity.CreatedDate = DateTime.Now;
-                        entry.Entity.CreatedBy = _loggedInUserService.UserId;
+                        entry.Entity.CreatedBy = _loggedInUserService?.UserId;
                         break;
                     case EntityState.Modified:
                         entry.Entity.LastModifiedDate = DateTime.Now;
-                        entry.Entity.LastModifiedBy = _loggedInUserService.UserId;
+                        entry.Entity.LastModifiedBy = _loggedInUserService?.UserId;
                         break;
                 }
             }

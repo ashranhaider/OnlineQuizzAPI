@@ -5,11 +5,13 @@ using OnlineQuizz.Application.Features.Quizzes.Commands.CreateQuizz;
 using OnlineQuizz.Application.Features.Quizzes.Commands.DeleteQuizz;
 using OnlineQuizz.Application.Features.Quizzes.Commands.UpdateQuizz;
 using OnlineQuizz.Application.Features.Quizzes.Queries.GetQuizzesList;
+using OnlineQuizz.Application.Features.QuizzQuestions.Commands;
+using OnlineQuizz.Application.Features.QuizzQuestions.Queries;
 using OnlineQuizz.Domain.Entities;
 
 namespace OnlineQuizz.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     [Authorize]
     public class QuizzController : ControllerBase
@@ -20,6 +22,7 @@ namespace OnlineQuizz.Api.Controllers
         {
             _mediator = mediator;
         }
+        #region Quizzes
 
         [HttpPost(Name = "AddQuizz")]
         public async Task<ActionResult<int>> Create([FromBody] CreateQuizzCommand createQuizzCommand)
@@ -50,5 +53,25 @@ namespace OnlineQuizz.Api.Controllers
             var response = await _mediator.Send(new DeleteQuizzCommand {Id = quizzId });
             return Ok(response);
         }
+
+        #endregion Quizzes
+
+        #region Questions
+
+        [HttpPost(Name = "AddQuestion")]
+        public async Task<ActionResult<int>> CreateQuestion([FromBody] CreateQuestionCommand createQuestionCommand)
+        {
+            var response = await _mediator.Send(createQuestionCommand);
+            return Ok(response);
+        }
+        [HttpGet(Name = "GetQuestions")]
+        public async Task<ActionResult<GetQuizzVM>> GetQuestions(int quizzId)
+        {
+            GetQuestionsQuery questionsQuery = new GetQuestionsQuery { QuizzId = quizzId };
+            var dtos = await _mediator.Send(questionsQuery);
+
+            return Ok(dtos);
+        }
+        #endregion
     }
 }
