@@ -29,6 +29,7 @@ namespace OnlineQuizz.Application.Features.QuizzQuestions.Commands
 
             var question = _mapper.Map<Question>(request);
 
+            question.Quizz = null;
 
             question = await _questionRepository.AddAsync(question);
 

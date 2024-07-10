@@ -48,7 +48,7 @@ namespace OnlineQuizz.Persistence.Migrations
 
                     b.HasIndex("QuizzId");
 
-                    b.ToTable("Questions");
+                    b.ToTable("Questions", (string)null);
                 });
 
             modelBuilder.Entity("OnlineQuizz.Domain.Entities.Quizz", b =>
@@ -80,7 +80,7 @@ namespace OnlineQuizz.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Quizzes");
+                    b.ToTable("Quizzes", (string)null);
                 });
 
             modelBuilder.Entity("OnlineQuizz.Domain.Entities.Question", b =>
