@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OnlineQuizz.Application.Features.Quizzes.Commands.CreateQuizz;
 using OnlineQuizz.Application.Features.Quizzes.Commands.DeleteQuizz;
@@ -10,6 +11,7 @@ namespace OnlineQuizz.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class QuizzController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -31,7 +33,7 @@ namespace OnlineQuizz.Api.Controllers
             var response = await _mediator.Send(updateQuizzCommand);
             return Ok(response);
         }
-        [HttpGet("All", Name = "GetQuizzes")]
+        [HttpGet(Name = "GetQuizzes")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesDefaultResponseType]
         public async Task<ActionResult<GetQuizzVM>> GetQuizzes()

@@ -48,6 +48,8 @@ namespace OnlineQuizz.Identity.Services
             {
                 Id = user.Id,
                 Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
+                FirstName = user.FirstName,
+                LastName = user.LastName,
                 Email = user.Email,
                 UserName = user.UserName
             };
