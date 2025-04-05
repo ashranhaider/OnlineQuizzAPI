@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnlineQuizz.Persistence;
 
@@ -11,9 +12,10 @@ using OnlineQuizz.Persistence;
 namespace OnlineQuizz.Persistence.Migrations
 {
     [DbContext(typeof(OnlineQuizzDbContext))]
-    partial class GloboTicketDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250405060301_question_option_entity")]
+    partial class question_option_entity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,45 +23,6 @@ namespace OnlineQuizz.Persistence.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
-
-            modelBuilder.Entity("OnlineQuizz.Domain.Entities.Answer", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("AnswerText")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("LastModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("QuestionId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("QuestionOptionId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("QuestionId");
-
-                    b.HasIndex("QuestionOptionId");
-
-                    b.ToTable("Answer");
-                });
 
             modelBuilder.Entity("OnlineQuizz.Domain.Entities.Question", b =>
                 {
@@ -99,20 +62,8 @@ namespace OnlineQuizz.Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<bool>("IsCorrect")
                         .HasColumnType("bit");
-
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("LastModifiedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<byte[]>("OptionImage")
                         .HasMaxLength(5242880)
@@ -170,21 +121,6 @@ namespace OnlineQuizz.Persistence.Migrations
                     b.ToTable("Quizzes");
                 });
 
-            modelBuilder.Entity("OnlineQuizz.Domain.Entities.Answer", b =>
-                {
-                    b.HasOne("OnlineQuizz.Domain.Entities.Question", "Question")
-                        .WithMany("Answers")
-                        .HasForeignKey("QuestionId");
-
-                    b.HasOne("OnlineQuizz.Domain.Entities.QuestionOption", "QuestionOption")
-                        .WithMany()
-                        .HasForeignKey("QuestionOptionId");
-
-                    b.Navigation("Question");
-
-                    b.Navigation("QuestionOption");
-                });
-
             modelBuilder.Entity("OnlineQuizz.Domain.Entities.Question", b =>
                 {
                     b.HasOne("OnlineQuizz.Domain.Entities.Quizz", "Quizz")
@@ -209,8 +145,6 @@ namespace OnlineQuizz.Persistence.Migrations
 
             modelBuilder.Entity("OnlineQuizz.Domain.Entities.Question", b =>
                 {
-                    b.Navigation("Answers");
-
                     b.Navigation("QuestionOptions");
                 });
 

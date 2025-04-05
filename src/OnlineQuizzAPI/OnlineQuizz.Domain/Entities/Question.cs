@@ -11,13 +11,13 @@ namespace OnlineQuizz.Domain.Entities
 {
     public class Question
     {
-        [Key]
         public int Id { get; set; }
         public string QuestionText { get; set; } = "";
         public QuestionTypes QuestionType { get; set; }
         public byte[] QuestionImage { get; set; } = new byte[0];
-        [ForeignKey("Quizz")]
         public int QuizzId { get; set; }
         public virtual Quizz? Quizz { get; set; } = new Quizz();
+        public virtual ICollection<QuestionOption>? QuestionOptions { get; set; } = new List<QuestionOption>();
+        public virtual ICollection<Answer>? Answers { get; set; } = new List<Answer>();
     }
 }
