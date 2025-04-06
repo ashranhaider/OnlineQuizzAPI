@@ -8,8 +8,8 @@ namespace OnlineQuizz.Persistence
     public class OnlineQuizzDbContext: DbContext
     {
         private readonly ILoggedInUserService? _loggedInUserService;
-        public DbSet<Quizz>? Quizzes { get; set; }
-        public DbSet<Question>? Questions { get; set; }
+        public DbSet<Quizz> Quizzes { get; set; } = null!;
+        public DbSet<Question> Questions { get; set; } = null!;
 
         public OnlineQuizzDbContext(DbContextOptions<OnlineQuizzDbContext> options, ILoggedInUserService loggedInUserService)
             : base(options)

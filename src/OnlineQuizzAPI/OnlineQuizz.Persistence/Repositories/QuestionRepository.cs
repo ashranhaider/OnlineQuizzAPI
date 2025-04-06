@@ -14,9 +14,9 @@ namespace OnlineQuizz.Persistence.Repositories
         public QuestionRepository(OnlineQuizzDbContext dbContext) : base(dbContext)
         {
         }
-        public Task<List<Question>> GetQuestionsByQuizzIdAsync(int quizzId)
+        public async Task<List<Question>> GetQuestionsByQuizzIdAsync(int quizzId)
         {
-            return _dbContext.Questions.Where(q => q.QuizzId == quizzId).ToListAsync();
+            return await _dbContext.Questions.Where(q => q.QuizzId == quizzId).Include(q => q.QuestionOptions).ToListAsync();
         }
     }
 }

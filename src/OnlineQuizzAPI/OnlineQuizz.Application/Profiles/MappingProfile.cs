@@ -24,6 +24,7 @@ namespace OnlineQuizz.Application.Profiles
 
 
             CreateMap<QuestionOption, CreateQuestionOptionCommand>().ReverseMap();
+            CreateMap<QuestionOption, QuestionOptionsVM>().ReverseMap();
         }
     }
 }
