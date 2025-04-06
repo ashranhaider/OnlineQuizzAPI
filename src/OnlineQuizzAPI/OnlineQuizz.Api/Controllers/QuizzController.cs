@@ -56,22 +56,5 @@ namespace OnlineQuizz.Api.Controllers
 
         #endregion Quizzes
 
-        #region Questions
-
-        [HttpPost(Name = "AddQuestion")]
-        public async Task<ActionResult<int>> CreateQuestion([FromBody] CreateQuestionCommand createQuestionCommand)
-        {
-            var response = await _mediator.Send(createQuestionCommand);
-            return Ok(response);
-        }
-        [HttpGet(Name = "GetQuestions")]
-        public async Task<ActionResult<GetQuizzVM>> GetQuestions(int quizzId)
-        {
-            GetQuestionsQuery questionsQuery = new GetQuestionsQuery { QuizzId = quizzId };
-            var dtos = await _mediator.Send(questionsQuery);
-
-            return Ok(dtos);
-        }
-        #endregion
     }
 }

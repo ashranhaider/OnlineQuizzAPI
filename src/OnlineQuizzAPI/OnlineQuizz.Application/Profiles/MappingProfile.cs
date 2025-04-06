@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using OnlineQuizz.Application.Features.QuestionOptions.Commands.CreateQuestionOption;
 using OnlineQuizz.Application.Features.Quizzes.Commands.CreateQuizz;
 using OnlineQuizz.Application.Features.Quizzes.Commands.UpdateQuizz;
 using OnlineQuizz.Application.Features.Quizzes.Queries.GetQuizzesList;
@@ -20,6 +21,9 @@ namespace OnlineQuizz.Application.Profiles
                 .ForMember(dest => dest.QuestionType, opt => opt.MapFrom(src => src.QuestionType.ToString()))
                 .ReverseMap();
             CreateMap<Question, CreateQuestionCommand>().ReverseMap();
+
+
+            CreateMap<QuestionOption, CreateQuestionOptionCommand>().ReverseMap();
         }
     }
 }
