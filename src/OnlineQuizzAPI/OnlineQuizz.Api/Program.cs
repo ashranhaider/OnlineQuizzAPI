@@ -1,6 +1,7 @@
 using OnlineQuizz.Api;
 
 using Serilog;
+using System.Reflection;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
