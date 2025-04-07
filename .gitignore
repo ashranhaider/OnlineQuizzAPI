@@ -42,3 +42,13 @@
 /src/OnlineQuizzAPI/.vs/OnlineQuizz
 /src/OnlineQuizzAPI/.vs
 /src/OnlineQuizzAPI/.vs/GloboTicket.TicketManagement
+/src/OnlineQuizzAPI/OnlineQuizz.Api/bin/Debug/net8.0/cs
+/src/OnlineQuizzAPI/OnlineQuizz.Api/bin/Debug/net8.0
+/src/OnlineQuizzAPI/OnlineQuizz.API.IntegrationTests/bin/Debug/net8.0
+/src/OnlineQuizzAPI/OnlineQuizz.Application/bin/Debug/net8.0
+/src/OnlineQuizzAPI/OnlineQuizz.Application.UnitTests/bin/Debug/net8.0
+/src/OnlineQuizzAPI/OnlineQuizz.Domain/bin/Debug/net8.0
+/src/OnlineQuizzAPI/OnlineQuizz.Identity/bin/Debug/net8.0
+/src/OnlineQuizzAPI/OnlineQuizz.Infrastructure/bin/Debug/net8.0
+/src/OnlineQuizzAPI/OnlineQuizz.Persistence/bin/Debug/net8.0
+/src/OnlineQuizzAPI/OnlineQuizz.Persistence.IntegrationTests/bin/Debug/net8.0
