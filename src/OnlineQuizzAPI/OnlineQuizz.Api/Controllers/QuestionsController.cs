@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OnlineQuizz.Application.Features.QuestionOptions.Commands.CreateQuestionOption;
+using OnlineQuizz.Application.Features.QuestionOptions.Commands.UpdateQuestionOption;
 using OnlineQuizz.Application.Features.Quizzes.Queries.GetQuizzesList;
 using OnlineQuizz.Application.Features.QuizzQuestions.Commands;
 using OnlineQuizz.Application.Features.QuizzQuestions.Queries;
@@ -38,12 +39,20 @@ namespace OnlineQuizz.Api.Controllers
 
         #region Question Options
 
-        [HttpPost("{QuestionId}/AddQuestionOption", Name = "AddQuestionOption")]
+        [HttpPost("{QuestionId}/QuestionOption", Name = "AddQuestionOption")]
         public async Task<ActionResult<int>> CreateQuestionOption([FromBody] CreateQuestionOptionCommand createQuestionOptionCommand, int QuestionId)
         {
             createQuestionOptionCommand.QuestionId = QuestionId;
             int response = await _mediator.Send(createQuestionOptionCommand);
             return Ok(response);
+        }
+
+        [HttpPatch("{QuestionId}/QuestionOption", Name = "UpdateQuestionOption")]
+        public async Task<ActionResult<int>> UpdateQuestionOption([FromBody] UpdateQuestionOption updateQuestionOptionCommand, int QuestionId)
+        {
+            updateQuestionOptionCommand.QuestionId = QuestionId;
+            await _mediator.Send(updateQuestionOptionCommand);
+            return Ok();
         }
         #endregion
     }
