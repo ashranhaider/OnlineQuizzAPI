@@ -12,10 +12,9 @@ namespace OnlineQuizz.Application.Features.QuizzQuestions.Commands
 {
     public class CreateQuestionCommand : IRequest<int>
     {
-        public int Id { get; set; }
         public string QuestionText { get; set; } = "";
-        public int QuestionType { get; set; }
-        public byte[] QuestionImage { get; set; } = new byte[0];
+        public QuestionTypes QuestionType { get; set; }
+        //public byte[] QuestionImage { get; set; } = new byte[0];
         public int QuizzId { get; set; }
     }
 }
