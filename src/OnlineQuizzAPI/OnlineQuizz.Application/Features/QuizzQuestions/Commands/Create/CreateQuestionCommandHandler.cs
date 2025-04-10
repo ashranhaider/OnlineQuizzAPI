@@ -6,7 +6,7 @@ using OnlineQuizz.Application.Contracts.Persistence;
 using OnlineQuizz.Domain.Entities;
 
 
-namespace OnlineQuizz.Application.Features.QuizzQuestions.Commands
+namespace OnlineQuizz.Application.Features.QuizzQuestions.Commands.Create
 {
     public class CreateQuestionCommandHandler : IRequestHandler<CreateQuestionCommand, int>
     {

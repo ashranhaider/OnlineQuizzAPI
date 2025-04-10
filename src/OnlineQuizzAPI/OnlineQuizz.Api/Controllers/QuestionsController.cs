@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using OnlineQuizz.Application.Features.QuestionOptions.Commands.CreateQuestionOption;
 using OnlineQuizz.Application.Features.QuestionOptions.Commands.UpdateQuestionOption;
 using OnlineQuizz.Application.Features.Quizzes.Queries.GetQuizzesList;
-using OnlineQuizz.Application.Features.QuizzQuestions.Commands;
+using OnlineQuizz.Application.Features.QuizzQuestions.Commands.Create;
 using OnlineQuizz.Application.Features.QuizzQuestions.Queries;
 
 namespace OnlineQuizz.Api.Controllers

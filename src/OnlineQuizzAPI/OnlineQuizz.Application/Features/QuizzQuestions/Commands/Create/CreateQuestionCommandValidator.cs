@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OnlineQuizz.Application.Features.QuizzQuestions.Commands
+namespace OnlineQuizz.Application.Features.QuizzQuestions.Commands.Create
 {
     public class CreateQuestionCommandValidator : AbstractValidator<CreateQuestionCommand>
     {
