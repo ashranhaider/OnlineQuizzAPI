@@ -5,6 +5,7 @@ using OnlineQuizz.Application.Features.QuestionOptions.Commands.CreateQuestionOp
 using OnlineQuizz.Application.Features.QuestionOptions.Commands.UpdateQuestionOption;
 using OnlineQuizz.Application.Features.Quizzes.Queries.GetQuizzesList;
 using OnlineQuizz.Application.Features.QuizzQuestions.Commands.Create;
+using OnlineQuizz.Application.Features.QuizzQuestions.Commands.Update;
 using OnlineQuizz.Application.Features.QuizzQuestions.Queries;
 
 namespace OnlineQuizz.Api.Controllers
@@ -26,6 +27,12 @@ namespace OnlineQuizz.Api.Controllers
         {
             var response = await _mediator.Send(createQuestionCommand);
             return Ok(response);
+        }
+        [HttpPatch(Name = "UpdateQuestion")]
+        public async Task<ActionResult> UpdateQuestion([FromBody] UpdateQuestionCommand updateQuestionCommand)
+        {
+            await _mediator.Send(updateQuestionCommand);
+            return NoContent();
         }
         [HttpGet(Name = "GetQuestions")]
         public async Task<ActionResult<GetQuizzVM>> GetQuestions(int quizzId)

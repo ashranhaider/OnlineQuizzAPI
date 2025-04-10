@@ -8,6 +8,7 @@ using OnlineQuizz.Infrastructure;
 using OnlineQuizz.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using System.Text.Json.Serialization;
 //using Serilog;
 
 namespace OnlineQuizz.Api
@@ -28,7 +29,10 @@ namespace OnlineQuizz.Api
 
             builder.Services.AddHttpContextAccessor();
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
 
             builder.Services.AddCors(options =>
             {
