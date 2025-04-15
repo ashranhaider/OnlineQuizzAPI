@@ -10,7 +10,7 @@ namespace OnlineQuizz.Domain.Entities
     public class Answer: AuditableEntity
     {
         public int Id { get; set; }
-        public string AnswerText { get; set; } = "";
+        public string AnswerText { get; set; } = null!;
         // Required relationship with Question (non-nullable)
         public int QuestionId { get; set; }
         public virtual Question Question { get; set; } = null!;

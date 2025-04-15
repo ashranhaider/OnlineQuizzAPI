@@ -7,7 +7,7 @@ using OnlineQuizz.Application.Features.Quizzes.Commands.CreateQuizz;
 
 namespace OnlineQuizz.Api.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     [ApiController]
     [Authorize]
     public class AnswerController : ControllerBase

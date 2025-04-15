@@ -8,7 +8,6 @@ namespace OnlineQuizz.Application.Features.Answers.Commands.CreateAnswer
         {
             RuleFor(p => p.AnswerText)
                 .NotEmpty().WithMessage("{PropertyName} is required.")
-                .NotNull()
                 .MaximumLength(500).WithMessage("{PropertyName} must not exceed 500 characters.");
 
             RuleFor(p => p.QuestionId)
