@@ -5,6 +5,7 @@ using OnlineQuizz.Application.Features.Quizzes.Commands.CreateQuizz;
 using OnlineQuizz.Application.Features.Quizzes.Commands.UpdateQuizz;
 using OnlineQuizz.Application.Features.Quizzes.Queries.GetQuizzesList;
 using OnlineQuizz.Application.Features.QuizzQuestions.Commands.Create;
+using OnlineQuizz.Application.Features.QuizzQuestions.Commands.Delete;
 using OnlineQuizz.Application.Features.QuizzQuestions.Commands.Update;
 using OnlineQuizz.Application.Features.QuizzQuestions.Queries;
 using OnlineQuizz.Domain.Entities;
@@ -24,6 +25,7 @@ namespace OnlineQuizz.Application.Profiles
                 .ReverseMap();
             CreateMap<Question, CreateQuestionCommand>().ReverseMap();
             CreateMap<Question, UpdateQuestionCommand>().ReverseMap();
+            CreateMap<Question, DeleteQuestionCommand>().ReverseMap();
 
             CreateMap<QuestionOption, CreateQuestionOptionCommand>().ReverseMap();
             CreateMap<QuestionOption, QuestionOptionsVM>().ReverseMap();
