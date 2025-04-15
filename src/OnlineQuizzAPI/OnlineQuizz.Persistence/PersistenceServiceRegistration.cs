@@ -17,6 +17,7 @@ namespace OnlineQuizz.Persistence
 
             services.AddScoped<IQuizzRepository, QuizzRepository>();
             services.AddScoped<IQuestionRepository, QuestionRepository>();
+            services.AddScoped<IAnswerRepository, AnswerRepository>();
 
             return services;    
         }
