@@ -13,6 +13,13 @@ namespace OnlineQuizz.Persistence.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Answer> builder)
         {
+            builder.ToTable("Answers");
+
+            builder.HasKey(a => a.Id);
+
+            builder.Property(a => a.AnswerText)
+                .IsRequired();
+
             builder.HasOne(a => a.Question)
                 .WithMany(q => q.Answers)
                 .HasForeignKey(a => a.QuestionId)
@@ -22,6 +29,11 @@ namespace OnlineQuizz.Persistence.EntityConfigurations
                 .WithMany()
                 .HasForeignKey(a => a.QuestionOptionId)
                 .IsRequired(false);
+
+            builder.HasOne(a => a.Attempt)
+            .WithMany(qa => qa.Answers)
+            .HasForeignKey(a => a.AttemptId)
+            .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

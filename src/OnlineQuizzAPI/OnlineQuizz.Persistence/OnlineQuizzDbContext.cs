@@ -9,6 +9,7 @@ namespace OnlineQuizz.Persistence
     {
         private readonly ILoggedInUserService? _loggedInUserService;
         public DbSet<Quizz> Quizzes { get; set; } = null!;
+        public DbSet<Attempt> Attempts { get; set; }
         public DbSet<Question> Questions { get; set; } = null!;
         public DbSet<Answer> Answers { get; set; } = null!;
 

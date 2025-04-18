@@ -18,5 +18,7 @@ namespace OnlineQuizz.Domain.Entities
         // Optional relationship with QuestionOption (nullable)
         public int? QuestionOptionId { get; set; }
         public virtual QuestionOption? QuestionOption { get; set; } // Nullable
+        public int AttemptId { get; set; }
+        public virtual Attempt Attempt { get; set; } = null!;
     }
 }

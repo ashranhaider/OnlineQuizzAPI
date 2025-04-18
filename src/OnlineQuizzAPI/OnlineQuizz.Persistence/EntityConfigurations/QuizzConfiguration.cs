@@ -35,6 +35,11 @@ namespace OnlineQuizz.Persistence.EntityConfigurations
                    .WithOne(q => q.Quizz) // Each Question has one Quizz
                    .HasForeignKey(q => q.QuizzId) // Foreign key is QuizzId in Question
                    .IsRequired(); // Relationship is required (every Question must be part of a Quizz)
+
+            builder.HasMany(q => q.Attempts)
+                .WithOne(a => a.Quizz) // Each Attempt has one Quizz
+                     .HasForeignKey(a => a.QuizzId) // Foreign key is QuizzId in Attempt
+                     .IsRequired(); // Relationship is required (every Attempt must be part of a Quizz)
         }
     }
 
