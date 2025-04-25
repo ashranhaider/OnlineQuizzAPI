@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OnlineQuizz.Application.Features.QuestionOptions.Commands.CreateQuestionOption;
+using OnlineQuizz.Application.Features.QuestionOptions.Commands.DeleteQuestionOption;
 using OnlineQuizz.Application.Features.QuestionOptions.Commands.UpdateQuestionOption;
 using OnlineQuizz.Application.Features.Quizzes.Queries.GetQuizzesList;
 using OnlineQuizz.Application.Features.QuizzQuestions.Commands.Create;
@@ -67,6 +68,12 @@ namespace OnlineQuizz.Api.Controllers
             updateQuestionOptionCommand.QuestionId = QuestionId;
             await _mediator.Send(updateQuestionOptionCommand);
             return Ok();
+        }
+        [HttpDelete("Question/QuestionOption", Name = "DeleteQuestionOption")]
+        public async Task<ActionResult<int>> DeleteQuestionOption([FromBody] DeleteQuestionOptionCommand deleteQuestionOptionCommand)
+        {
+            await _mediator.Send(deleteQuestionOptionCommand);
+            return NoContent();
         }
         #endregion
     }
