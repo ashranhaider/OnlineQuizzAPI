@@ -26,6 +26,13 @@ namespace OnlineQuizz.Persistence.EntityConfigurations
                    .IsRequired(false) // Make it optional
                    .HasMaxLength(500); // Example max length for URL
 
+            // Configure UniqueURL as optional but unique
+            builder.Property(qz => qz.UniqueURL)
+                   .IsRequired(false)
+                   .HasMaxLength(500);
+
+            builder.HasIndex(qz => qz.UniqueURL).IsUnique();
+
             // Configure IsActive as required
             builder.Property(qz => qz.IsActive)
                    .IsRequired(); // Ensure it's required to have an active state

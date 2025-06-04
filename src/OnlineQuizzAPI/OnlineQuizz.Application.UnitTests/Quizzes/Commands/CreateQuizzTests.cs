@@ -30,7 +30,7 @@ namespace OnlineQuizz.Application.UnitTests.Categories.Commands
         {
             var handler = new CreateQuizzCommandHandler(_mapper, _mockQuizzRepository.Object);
 
-            await handler.Handle(new CreateQuizzCommand() { Name = "Test" }, CancellationToken.None);
+            await handler.Handle(new CreateQuizzCommand() { Name = "Test", UniqueURL = "test" }, CancellationToken.None);
 
             var allCategories = await _mockQuizzRepository.Object.ListAllAsync();
             allCategories.Count.ShouldBe(5);
