@@ -20,7 +20,7 @@ namespace OnlineQuizz.Identity
         {
             services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
 
-            services.AddDbContext<OnlineQuizzIdentityDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("OnlineQuizzIdentityConnectionString"),
+            services.AddDbContext<OnlineQuizzIdentityDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("OnlineQuizzConnectionString"),
                 b => b.MigrationsAssembly(typeof(OnlineQuizzIdentityDbContext).Assembly.FullName)));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
