@@ -56,9 +56,9 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_B9837D068DAB4A5DA0E011A6E73FCBA8 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_20170EE22E1B4BCCA9BD6C821BC87A71 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_AD1B7EC704174E329417FB589FB273E8 }}
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
@@ -66,3 +66,4 @@ jobs:
           app-name: 'api-online-quizz'
           slot-name: 'Production'
           package: .
+
