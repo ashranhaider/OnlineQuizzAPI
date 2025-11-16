@@ -14,13 +14,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((context, loggerConfiguration) => loggerConfiguration
      .WriteTo.Console()
      .ReadFrom.Configuration(context.Configuration), true);
-
+builder.Services.AddHealthChecks();
 var app = builder
        .ConfigureServices()
        .ConfigurePipeline();
 
 app.UseSerilogRequestLogging();
-
+app.MapHealthChecks("/health");
 app.Run();
 
 public partial class Program { }
