@@ -16,29 +16,28 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up .NET
+      - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.x'
 
-      - name: Restore
-        working-directory: src/OnlineQuizzAPI
-        run: dotnet restore OnlineQuizz.sln
+      - name: Restore API project only
+        working-directory: src/OnlineQuizzAPI/OnlineQuizz.Api
+        run: dotnet restore OnlineQuizz.Api.csproj
 
-      - name: Build
-        working-directory: src/OnlineQuizzAPI
-        run: dotnet build OnlineQuizz.sln --configuration Release --no-restore
+      - name: Build API project only
+        working-directory: src/OnlineQuizzAPI/OnlineQuizz.Api
+        run: dotnet build OnlineQuizz.Api.csproj --configuration Release --no-restore
 
-      - name: Publish
-        working-directory: src/OnlineQuizzAPI
-        run: dotnet publish OnlineQuizz.Api/OnlineQuizz.Api.csproj -c Release -o publish
+      - name: Publish API project only
+        working-directory: src/OnlineQuizzAPI/OnlineQuizz.Api
+        run: dotnet publish OnlineQuizz.Api.csproj -c Release -o publish
 
-
-      - name: Upload artifact
+      - name: Upload published artifacts
         uses: actions/upload-artifact@v4
         with:
           name: api_publish
-          path: src/OnlineQuizzAPI/publish
+          path: src/OnlineQuizzAPI/OnlineQuizz.Api/publish
 
   deploy:
     runs-on: ubuntu-latest
@@ -48,7 +47,7 @@ jobs:
       contents: read
 
     steps:
-      - name: Download artifact
+      - name: Download published API
         uses: actions/download-artifact@v4
         with:
           name: api_publish
@@ -61,11 +60,9 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_20170EE22E1B4BCCA9BD6C821BC87A71 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_AD1B7EC704174E329417FB589FB273E8 }}
 
-      - name: Deploy to Azure Web App
+      - name: Deploy ONLY the API project to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'api-online-quizz'
           slot-name: 'Production'
           package: .
-
-
