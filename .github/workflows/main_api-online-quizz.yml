@@ -13,57 +13,59 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: read #This is required for actions/checkout
+      contents: read
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Set up .NET Core
+      - name: Set up .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '10.x'
+          dotnet-version: '8.x'
 
-      - name: Build with dotnet
+      - name: Restore
         working-directory: src/OnlineQuizzAPI
-        run: dotnet build --configuration Release
+        run: dotnet restore OnlineQuizzAPI.sln
 
-      - name: dotnet publish
+      - name: Build
         working-directory: src/OnlineQuizzAPI
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet build OnlineQuizzAPI.sln --configuration Release --no-restore
 
-      - name: Upload artifact for deployment job
+      - name: Publish
+        working-directory: src/OnlineQuizzAPI
+        run: dotnet publish OnlineQuizzAPI.sln -c Release -o publish
+
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          name: api_publish
+          path: src/OnlineQuizzAPI/publish
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
     permissions:
-      id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
+      id-token: write
+      contents: read
 
     steps:
-      - name: Download artifact from build job
+      - name: Download artifact
         uses: actions/download-artifact@v4
         with:
-          name: .net-app
-      
+          name: api_publish
+          path: .
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_B9837D068DAB4A5DA0E011A6E73FCBA8 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_20170EE22E1B4BCCA9BD6C821BC87A71 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_AD1B7EC704174E329417FB589FB273E8 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID }}
 
       - name: Deploy to Azure Web App
-        id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'api-online-quizz'
           slot-name: 'Production'
           package: .
-
-          
-
