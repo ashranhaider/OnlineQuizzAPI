@@ -55,6 +55,8 @@ namespace OnlineQuizz.Api
                 });
             }
 
+            app.MapGet("/", () => Results.Ok("OnlineQuizz API is running"));
+
             app.UseHttpsRedirection();
 
             //app.UseRouting();
