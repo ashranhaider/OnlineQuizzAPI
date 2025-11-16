@@ -45,10 +45,10 @@ namespace OnlineQuizz.Api
 
         public static WebApplication ConfigurePipeline(this WebApplication app)
         {
-
+            app.UseSwagger(); // Only generates JSON
             if (app.Environment.IsDevelopment())
             {
-                app.UseSwagger();
+                
                 app.UseSwaggerUI(c =>
                 {
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "OnlineQuizz API");
