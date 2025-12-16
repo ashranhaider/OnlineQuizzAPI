@@ -20,8 +20,17 @@ namespace OnlineQuizz.Identity
         {
             services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
 
-            services.AddDbContext<OnlineQuizzIdentityDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("OnlineQuizzConnectionString"),
-                b => b.MigrationsAssembly(typeof(OnlineQuizzIdentityDbContext).Assembly.FullName)));
+            services.AddDbContext<OnlineQuizzIdentityDbContext>(options =>
+                 options.UseSqlServer(
+                     configuration.GetConnectionString("OnlineQuizzConnectionString"),
+                     sqlOptions =>
+                     {
+                         sqlOptions.EnableRetryOnFailure(
+                             maxRetryCount: 5,
+                             maxRetryDelay: TimeSpan.FromSeconds(10),
+                             errorNumbersToAdd: null);
+                     })
+             );
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<OnlineQuizzIdentityDbContext>().AddDefaultTokenProviders();

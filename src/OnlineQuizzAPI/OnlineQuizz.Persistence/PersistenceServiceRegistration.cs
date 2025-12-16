@@ -11,7 +11,16 @@ namespace OnlineQuizz.Persistence
         public static IServiceCollection AddPersistenceServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<OnlineQuizzDbContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("OnlineQuizzConnectionString")));
+                 options.UseSqlServer(
+                     configuration.GetConnectionString("OnlineQuizzConnectionString"),
+                     sqlOptions =>
+                     {
+                         sqlOptions.EnableRetryOnFailure(
+                             maxRetryCount: 5,
+                             maxRetryDelay: TimeSpan.FromSeconds(10),
+                             errorNumbersToAdd: null);
+                     })
+             );
 
             services.AddScoped(typeof(IAsyncRepository<>), typeof(BaseRepository<>));
 
