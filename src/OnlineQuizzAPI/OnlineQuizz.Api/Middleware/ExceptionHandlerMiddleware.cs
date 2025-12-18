@@ -1,4 +1,5 @@
 ﻿using OnlineQuizz.Application.Exceptions;
+using OnlineQuizz.Application.Models;
 using System.Net;
 using System.Text.Json;
 
@@ -25,40 +26,50 @@ namespace OnlineQuizz.Api.Middleware
             }
         }
 
-        private Task ConvertException(HttpContext context, Exception exception)
+        private async Task ConvertException(HttpContext context, Exception exception)
         {
-            HttpStatusCode httpStatusCode = HttpStatusCode.InternalServerError;
-
             context.Response.ContentType = "application/json";
 
-            var result = string.Empty;
+            ErrorResponse response = new ErrorResponse
+            {
+                Code = "UNEXPECTED_ERROR",
+                Message = "An unexpected error occurred"
+            };
 
             switch (exception)
             {
                 case ValidationException validationException:
-                    httpStatusCode = HttpStatusCode.BadRequest;
-                    result = JsonSerializer.Serialize(validationException.ValdationErrors);
+                    context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                    response.Code = "VALIDATION_ERROR";
+                    response.Message = "One or more validation errors occurred";
+                    response.Errors = validationException.ValdationErrors;
                     break;
-                case BadRequestException badRequestException:
-                    httpStatusCode = HttpStatusCode.BadRequest;
-                    result = badRequestException.Message;
+
+                case AuthenticationFailedException:
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    response.Code = "AUTH_INVALID_CREDENTIALS";
+                    response.Message = exception.Message;
                     break;
+
                 case NotFoundException:
-                    httpStatusCode = HttpStatusCode.NotFound;
+                    context.Response.StatusCode = StatusCodes.Status404NotFound;
+                    response.Code = "NOT_FOUND";
+                    response.Message = "Resource not found";
                     break;
-                case Exception:
-                    httpStatusCode = HttpStatusCode.BadRequest;
+
+                case DomainException:
+                    context.Response.StatusCode = StatusCodes.Status409Conflict;
+                    response.Code = "BUSINESS_RULE_VIOLATION";
+                    response.Message = exception.Message;
+                    break;
+
+                default:
+                    context.Response.StatusCode = StatusCodes.Status500InternalServerError;
                     break;
             }
 
-            context.Response.StatusCode = (int)httpStatusCode;
-
-            if (result == string.Empty)
-            {
-                result = JsonSerializer.Serialize(new { error = exception.Message });
-            }
-
-            return context.Response.WriteAsync(result);
+            await context.Response.WriteAsJsonAsync(response);
         }
+
     }
 }

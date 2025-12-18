@@ -8,6 +8,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Linq;
+using OnlineQuizz.Application.Exceptions;
 
 namespace OnlineQuizz.Identity.Services
 {
@@ -38,9 +39,7 @@ namespace OnlineQuizz.Identity.Services
             var result = await _signInManager.PasswordSignInAsync(user.UserName, request.Password, false, lockoutOnFailure: false);
 
             if (!result.Succeeded)
-            {
-                throw new Exception($"Credentials for '{request.Email} aren't valid'.");
-            }
+                throw new AuthenticationFailedException();
 
             JwtSecurityToken jwtSecurityToken = await GenerateToken(user);
 
