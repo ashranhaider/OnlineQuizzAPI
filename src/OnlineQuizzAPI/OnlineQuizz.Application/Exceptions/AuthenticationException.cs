@@ -8,7 +8,7 @@ namespace OnlineQuizz.Application.Exceptions
 {
     public class AuthenticationFailedException : DomainException
     {
-        public AuthenticationFailedException()
-            : base("Invalid email or password") { }
+        public AuthenticationFailedException(string message)
+            : base(message) { }
     }
 }

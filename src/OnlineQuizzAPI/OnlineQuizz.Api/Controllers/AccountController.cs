@@ -1,6 +1,7 @@
 ﻿using OnlineQuizz.Application.Contracts.Identity;
 using OnlineQuizz.Application.Models.Authentication;
 using Microsoft.AspNetCore.Mvc;
+using OnlineQuizz.Application.Responses;
 
 namespace OnlineQuizz.Api.Controllers
 {
@@ -13,17 +14,46 @@ namespace OnlineQuizz.Api.Controllers
         {
             _authenticationService = authenticationService;
         }
+        /*TODO: Password change         
+            ➡ await _userManager.UpdateSecurityStampAsync(user);
+            ➡ All JWTs invalid
+            ➡ All refresh tokens revoked (you should revoke manually)
 
+        Update stamp on:
+
+            password change
+
+            role change
+
+            logout all
+
+            refresh token abuse
+         */
         [HttpPost("authenticate")]
-        public async Task<ActionResult<AuthenticationResponse>> AuthenticateAsync(AuthenticationRequest request)
+        public async Task<ActionResult<ApiResponse<AuthenticationResponse>>> AuthenticateAsync([FromBody] AuthenticationRequest request)
         {
-            return Ok(await _authenticationService.AuthenticateAsync(request));
+            AuthenticationResponse response = await _authenticationService.AuthenticateAsync(request);
+            
+            ApiResponse<AuthenticationResponse> apiResponse = new ApiResponse<AuthenticationResponse>
+            {
+                Data = response,
+                Message = "Authentication successful"
+            };
+
+            return Ok(apiResponse);
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<RegistrationResponse>> RegisterAsync(RegistrationRequest request)
+        public async Task<ActionResult<ApiResponse<RegistrationResponse>>> RegisterAsync([FromBody] RegistrationRequest request)
         {
-            return Ok(await _authenticationService.RegisterAsync(request));
+            RegistrationResponse response = await _authenticationService.RegisterAsync(request);
+
+            ApiResponse<RegistrationResponse> apiResponse = new ApiResponse<RegistrationResponse>
+            {
+                Data = response,
+                Message = "Registration successful"
+            };
+            return Ok(apiResponse);
         }
     }
 }

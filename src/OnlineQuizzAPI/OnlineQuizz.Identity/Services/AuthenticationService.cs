@@ -12,7 +12,7 @@ using OnlineQuizz.Application.Exceptions;
 
 namespace OnlineQuizz.Identity.Services
 {
-    public class AuthenticationService: IAuthenticationService
+    public class AuthenticationService : IAuthenticationService
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
@@ -29,41 +29,57 @@ namespace OnlineQuizz.Identity.Services
 
         public async Task<AuthenticationResponse> AuthenticateAsync(AuthenticationRequest request)
         {
-            var user = await _userManager.FindByEmailAsync(request.Email);
+            if (request == null)
+            {
+                throw new BadRequestException("Something went wrong. Please try again.");
+            }
+
+            if (request.Email == null || request.Email == "")
+            {
+                throw new BadRequestException("Email cannot be null");
+            }
+
+            ApplicationUser? user = await _userManager.FindByEmailAsync(request.Email);
 
             if (user == null)
             {
-                throw new Exception($"User with {request.Email} not found.");
+                throw new NotFoundException($"User with {request.Email} not found.", request);
             }
 
-            var result = await _signInManager.PasswordSignInAsync(user.UserName, request.Password, false, lockoutOnFailure: false);
+            SignInResult result = await _signInManager.PasswordSignInAsync(user.UserName ?? user.Email ?? "", request.Password, false, lockoutOnFailure: false);
 
             if (!result.Succeeded)
-                throw new AuthenticationFailedException();
+                throw new AuthenticationFailedException("Invalid email or password");
 
-            JwtSecurityToken jwtSecurityToken = await GenerateToken(user);
+            string jwtSecurityToken = await GenerateJwtToken(user);
 
             AuthenticationResponse response = new AuthenticationResponse
             {
-                Id = user.Id,
-                Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email,
-                UserName = user.UserName
+                User = new AuthenticatedUser
+                {
+                    Id = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = user.Email ?? "",
+                    UserName = user.UserName ?? user.Email ?? ""
+                },
+                AccessToken = jwtSecurityToken,
+                ExpiresIn = DateTime.UtcNow.AddMinutes(_jwtSettings.DurationInMinutes)
             };
-            
+
             return response;
         }
 
         public async Task<RegistrationResponse> RegisterAsync(RegistrationRequest request)
         {
-            var existingUser = await _userManager.FindByNameAsync(request.UserName);
+            if (request == null)
+                throw new BadRequestException("Invalid request");
 
-            if (existingUser != null)
-            {
-                throw new Exception($"Username '{request.UserName}' already exists.");
-            }
+            if (await _userManager.FindByNameAsync(request.UserName) != null)
+                throw new DomainException($"Username '{request.UserName}' already exists");
+
+            if (await _userManager.FindByEmailAsync(request.Email) != null)
+                throw new DomainException($"Email '{request.Email}' already exists");
 
             var user = new ApplicationUser
             {
@@ -74,59 +90,66 @@ namespace OnlineQuizz.Identity.Services
                 EmailConfirmed = true
             };
 
-            var existingEmail = await _userManager.FindByEmailAsync(request.Email);
+            IdentityResult result = await _userManager.CreateAsync(user, request.Password);
 
-            if (existingEmail == null)
+            if (!result.Succeeded)
             {
-                var result = await _userManager.CreateAsync(user, request.Password);
+                List<FluentValidation.Results.ValidationFailure> errors = result.Errors
+                    .Select(x => new FluentValidation.Results.ValidationFailure
+                    {
+                        ErrorCode = x.Code,
+                        Severity = FluentValidation.Severity.Error,
+                        ErrorMessage = x.Description
+                    }).ToList();
 
-                if (result.Succeeded)
-                {
-                    return new RegistrationResponse() { UserId = user.Id };
-                }
-                else
-                {
-                    throw new Exception($"{String.Join(",", result.Errors)}");
-                }
+                throw new ValidationException(new FluentValidation.Results.ValidationResult(errors));
             }
-            else
+
+            return new RegistrationResponse
             {
-                throw new Exception($"Email {request.Email } already exists.");
-            }
+                UserId = user.Id,
+                Message = "User registered successfully"
+            };
         }
 
-        private async Task<JwtSecurityToken> GenerateToken(ApplicationUser user)
+
+
+        private async Task<string> GenerateJwtToken(ApplicationUser user)
         {
             var userClaims = await _userManager.GetClaimsAsync(user);
             var roles = await _userManager.GetRolesAsync(user);
 
-            var roleClaims = new List<Claim>();
+            if (string.IsNullOrEmpty(user.SecurityStamp))
+                throw new DomainException("User security stamp missing");
 
-            for (int i = 0; i < roles.Count; i++)
-            {
-                roleClaims.Add(new Claim("roles", roles[i]));
-            }
-
-            var claims = new[]
+            var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim("uid", user.Id)
-            }
-            .Union(userClaims)
-            .Union(roleClaims);
+                new Claim(JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
+                new Claim("security_stamp", user.SecurityStamp ?? string.Empty),
+                new Claim(ClaimTypes.NameIdentifier, user.Id)
+            };
 
-            var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
-            var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
+            claims.AddRange(userClaims);
 
-            var jwtSecurityToken = new JwtSecurityToken(
+            claims.AddRange(roles.Select(role =>
+                new Claim(ClaimTypes.Role, role)));
+
+            var key = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(_jwtSettings.Key));
+
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
                 issuer: _jwtSettings.Issuer,
                 audience: _jwtSettings.Audience,
                 claims: claims,
                 expires: DateTime.UtcNow.AddMinutes(_jwtSettings.DurationInMinutes),
-                signingCredentials: signingCredentials);
-            return jwtSecurityToken;
+                signingCredentials: creds
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }

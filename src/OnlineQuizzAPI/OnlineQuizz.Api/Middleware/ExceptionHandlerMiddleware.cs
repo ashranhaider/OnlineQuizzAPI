@@ -1,7 +1,7 @@
 ﻿using OnlineQuizz.Application.Exceptions;
 using OnlineQuizz.Application.Models;
+using OnlineQuizz.Application.Responses;
 using System.Net;
-using System.Text.Json;
 
 namespace OnlineQuizz.Api.Middleware
 {
@@ -22,54 +22,58 @@ namespace OnlineQuizz.Api.Middleware
             }
             catch (Exception ex)
             {
-                await ConvertException(context, ex);
+                await HandleException(context, ex);
             }
         }
 
-        private async Task ConvertException(HttpContext context, Exception exception)
+        private async Task HandleException(HttpContext context, Exception exception)
         {
             context.Response.ContentType = "application/json";
 
-            ErrorResponse response = new ErrorResponse
-            {
-                Code = "UNEXPECTED_ERROR",
-                Message = "An unexpected error occurred"
-            };
+            ApiResponse<object> response;
+            int statusCode;
 
             switch (exception)
             {
                 case ValidationException validationException:
-                    context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                    response.Code = "VALIDATION_ERROR";
-                    response.Message = "One or more validation errors occurred";
-                    response.Errors = validationException.ValdationErrors;
+                    statusCode = StatusCodes.Status400BadRequest;
+                    response = ApiResponse<object>.Failure(
+                        message: "One or more validation errors occurred",
+                        errors: validationException.ValdationErrors
+                    );
                     break;
 
                 case AuthenticationFailedException:
-                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                    response.Code = "AUTH_INVALID_CREDENTIALS";
-                    response.Message = exception.Message;
+                    statusCode = StatusCodes.Status401Unauthorized;
+                    response = ApiResponse<object>.Failure(
+                        exception.Message ?? "Invalid credentials"
+                    );
                     break;
 
                 case NotFoundException:
-                    context.Response.StatusCode = StatusCodes.Status404NotFound;
-                    response.Code = "NOT_FOUND";
-                    response.Message = "Resource not found";
+                    statusCode = StatusCodes.Status404NotFound;
+                    response = ApiResponse<object>.Failure(
+                        exception.Message ?? "Resource not found"
+                    );
                     break;
 
                 case DomainException:
-                    context.Response.StatusCode = StatusCodes.Status409Conflict;
-                    response.Code = "BUSINESS_RULE_VIOLATION";
-                    response.Message = exception.Message;
+                    statusCode = StatusCodes.Status409Conflict;
+                    response = ApiResponse<object>.Failure(
+                        exception.Message
+                    );
                     break;
 
                 default:
-                    context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                    statusCode = StatusCodes.Status500InternalServerError;
+                    response = ApiResponse<object>.Failure(
+                        "An unexpected error occurred"
+                    );
                     break;
             }
 
+            context.Response.StatusCode = statusCode;
             await context.Response.WriteAsJsonAsync(response);
         }
-
     }
 }
