@@ -8,10 +8,12 @@ namespace OnlineQuizz.Api.Middleware
     public class ExceptionHandlerMiddleware
     {
         private readonly RequestDelegate _next;
+        private readonly IWebHostEnvironment _env;
 
-        public ExceptionHandlerMiddleware(RequestDelegate next)
+        public ExceptionHandlerMiddleware(RequestDelegate next, IWebHostEnvironment env)
         {
             _next = next;
+            _env = env;
         }
 
         public async Task Invoke(HttpContext context)
@@ -66,9 +68,20 @@ namespace OnlineQuizz.Api.Middleware
 
                 default:
                     statusCode = StatusCodes.Status500InternalServerError;
-                    response = ApiResponse<object>.Failure(
-                        "An unexpected error occurred"
+                    if (_env.IsDevelopment())
+                    {
+                        response = ApiResponse<object>.Failure(
+                        "Error: " + exception.Message + Environment.NewLine +
+                                        (exception.InnerException != null ? exception.InnerException.Message : string.Empty)
                     );
+                    }
+                    else
+                    {
+                        response = ApiResponse<object>.Failure(
+                        "An unexpected error occurred"
+                        );
+                    }
+
                     break;
             }
 
