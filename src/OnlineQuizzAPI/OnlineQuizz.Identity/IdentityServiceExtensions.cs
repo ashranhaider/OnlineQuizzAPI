@@ -36,6 +36,16 @@ namespace OnlineQuizz.Identity
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<OnlineQuizzIdentityDbContext>().AddDefaultTokenProviders();
 
+            services.Configure<IdentityOptions>(options =>
+            {
+                // Disable Identity password rules because FluentValidation now handles them
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequiredLength = 1; // min rule enforced by FluentValidation instead
+            });
+
             services.AddTransient<IAuthenticationService, AuthenticationService>();
 
             services.AddAuthentication(options =>

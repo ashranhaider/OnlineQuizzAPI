@@ -1,19 +1,20 @@
 ﻿using FluentValidation.Results;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace OnlineQuizz.Application.Exceptions
 {
     public class ValidationException : Exception
     {
-        public List<string> ValdationErrors { get; set; }
+        public IDictionary<string, string[]> Errors { get; }
 
-        public ValidationException(ValidationResult validationResult)
+        public ValidationException(ValidationResult result)
         {
-            ValdationErrors = new List<string>();
-
-            foreach (var validationError in validationResult.Errors)
-            {
-                ValdationErrors.Add(validationError.ErrorMessage);
-            }
+            Errors = result.Errors
+                .GroupBy(e => e.PropertyName)
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.Select(e => e.ErrorMessage).ToArray()
+                );
         }
     }
 }

@@ -1,7 +1,10 @@
-﻿using OnlineQuizz.Application.Contracts.Identity;
-using OnlineQuizz.Application.Models.Authentication;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using OnlineQuizz.Application.Contracts.Identity;
+using OnlineQuizz.Application.Features.Auth.Register.Commands;
+using OnlineQuizz.Application.Models.Authentication;
 using OnlineQuizz.Application.Responses;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace OnlineQuizz.Api.Controllers
 {
@@ -10,9 +13,11 @@ namespace OnlineQuizz.Api.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IAuthenticationService _authenticationService;
-        public AccountController(IAuthenticationService authenticationService)
+        private readonly IMediator _mediator;
+        public AccountController(IAuthenticationService authenticationService, IMediator mediator)
         {
             _authenticationService = authenticationService;
+            _mediator = mediator;
         }
         /*TODO: Password change         
             ➡ await _userManager.UpdateSecurityStampAsync(user);
@@ -44,16 +49,10 @@ namespace OnlineQuizz.Api.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<ApiResponse<RegistrationResponse>>> RegisterAsync([FromBody] RegistrationRequest request)
+        public async Task<ActionResult<ApiResponse<RegistrationResponse>>> RegisterAsync([FromBody] RegisterCommand command)
         {
-            RegistrationResponse response = await _authenticationService.RegisterAsync(request);
-
-            ApiResponse<RegistrationResponse> apiResponse = new ApiResponse<RegistrationResponse>
-            {
-                Data = response,
-                Message = "Registration successful"
-            };
-            return Ok(apiResponse);
+            var result = await _mediator.Send(command);
+            return Ok(ApiResponse<RegistrationResponse>.Success(result, "User Registered"));
         }
     }
 }

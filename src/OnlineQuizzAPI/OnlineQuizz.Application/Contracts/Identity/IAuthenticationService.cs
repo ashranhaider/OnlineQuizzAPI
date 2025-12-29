@@ -1,4 +1,5 @@
-﻿using OnlineQuizz.Application.Models.Authentication;
+﻿using OnlineQuizz.Application.Features.Auth.Register.Commands;
+using OnlineQuizz.Application.Models.Authentication;
 
 namespace OnlineQuizz.Application.Contracts.Identity
 {

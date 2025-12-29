@@ -40,8 +40,8 @@ namespace OnlineQuizz.Api.Middleware
                 case ValidationException validationException:
                     statusCode = StatusCodes.Status400BadRequest;
                     response = ApiResponse<object>.Failure(
-                        message: "One or more validation errors occurred",
-                        errors: validationException.ValdationErrors
+                       errors: validationException.Errors,
+                       message: "Validation failed"                        
                     );
                     break;
 
