@@ -13,6 +13,7 @@ namespace OnlineQuizz.Domain.Entities
         public string Name { get; set; } = String.Empty;
         public string URL { get; set; } = String.Empty;
         public string UniqueURL { get; set; } = String.Empty;
+        public string OwnerUserId { get; set; } = String.Empty;
         public bool IsActive { get; set; }
         public virtual ICollection<Question>? Questions { get; set; }
         public virtual ICollection<Attempt>? Attempts { get; set; }

@@ -9,5 +9,7 @@ namespace OnlineQuizz.Application.Features.Quizzes.Queries.GetQuizzesList
 {
     public class GetQuizzesQuery : IRequest<List<GetQuizzVM>>
     {
+        public int Page { get; set; }
+        public int Size { get; set; }
     }
 }

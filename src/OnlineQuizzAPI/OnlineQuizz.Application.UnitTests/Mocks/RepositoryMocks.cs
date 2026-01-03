@@ -6,7 +6,7 @@ namespace OnlineQuizz.Application.UnitTests.Mocks
 {
     public class RepositoryMocks
     {
-        public static Mock<IAsyncRepository<Quizz>> GetQuizzRepository()
+        public static Mock<IQuizzRepository> GetQuizzRepository()
         {
             
             var categories = new List<Quizz>
@@ -37,7 +37,7 @@ namespace OnlineQuizz.Application.UnitTests.Mocks
                 }
             };
 
-            var mockQuizzRepository = new Mock<IAsyncRepository<Quizz>>();
+            var mockQuizzRepository = new Mock<IQuizzRepository>();
             mockQuizzRepository.Setup(repo => repo.ListAllAsync()).ReturnsAsync(categories);
 
             mockQuizzRepository.Setup(repo => repo.AddAsync(It.IsAny<Quizz>())).ReturnsAsync(

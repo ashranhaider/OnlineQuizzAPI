@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using FluentValidation.Results;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using OnlineQuizz.Application.Contracts.Infrastructure;
@@ -29,13 +30,13 @@ namespace OnlineQuizz.Application.Features.Quizzes.Commands.UpdateQuizz
 
         public async Task<Quizz> Handle(UpdateQuizzCommand request, CancellationToken cancellationToken)
         {
-            var validator = new UpdateQuizzCommandValidator();
-            var validationResult = await validator.ValidateAsync(request);
+            UpdateQuizzCommandValidator validator = new UpdateQuizzCommandValidator();
+            ValidationResult validationResult = await validator.ValidateAsync(request);
 
             if (validationResult.Errors.Count > 0)
                 throw new Exceptions.ValidationException(validationResult);
 
-            var @quizz = _mapper.Map<Quizz>(request);
+            Quizz @quizz = _mapper.Map<Quizz>(request);
 
 
             await _quizzRepository.UpdateAsync(@quizz);

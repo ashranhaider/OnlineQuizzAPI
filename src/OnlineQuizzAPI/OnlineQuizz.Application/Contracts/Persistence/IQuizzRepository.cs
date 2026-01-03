@@ -9,6 +9,6 @@ namespace OnlineQuizz.Application.Contracts.Persistence
 {
     public interface IQuizzRepository : IAsyncRepository<Quizz>
     {
-        Task<List<Quizz>> GetPagedQuizzes(int page, int size);
+        Task<List<Quizz>> GetPagedQuizzes(string UserId, int page, int size);
     }
 }

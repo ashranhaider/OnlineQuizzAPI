@@ -23,7 +23,7 @@ namespace OnlineQuizz.Persistence.EntityConfigurations
 
             // Configure URL as required and with a max length
             builder.Property(qz => qz.URL)
-                   .IsRequired(false) // Make it optional
+                   .IsRequired(false)
                    .HasMaxLength(500); // Example max length for URL
 
             // Configure UniqueURL as optional but unique
@@ -31,7 +31,22 @@ namespace OnlineQuizz.Persistence.EntityConfigurations
                    .IsRequired(false)
                    .HasMaxLength(500);
 
+            builder.Property(q => q.OwnerUserId)
+                   .IsRequired()
+                   .HasMaxLength(450);
+
+            builder.Property(q => q.CreatedBy)
+                   .HasMaxLength(450);
+
+            builder.Property(q => q.LastModifiedBy)
+                   .HasMaxLength(450);
+
+            builder.Property(q => q.CreatedDate)
+                   .IsRequired();
+
             builder.HasIndex(qz => qz.UniqueURL).IsUnique();
+
+            builder.HasIndex(q => new { q.OwnerUserId, q.IsActive });
 
             // Configure IsActive as required
             builder.Property(qz => qz.IsActive)
@@ -41,12 +56,14 @@ namespace OnlineQuizz.Persistence.EntityConfigurations
             builder.HasMany(qz => qz.Questions) // One Quizz has many Questions
                    .WithOne(q => q.Quizz) // Each Question has one Quizz
                    .HasForeignKey(q => q.QuizzId) // Foreign key is QuizzId in Question
-                   .IsRequired(); // Relationship is required (every Question must be part of a Quizz)
+                   .IsRequired() // Relationship is required (every Question must be part of a Quizz)
+                   .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasMany(q => q.Attempts)
                 .WithOne(a => a.Quizz) // Each Attempt has one Quizz
                      .HasForeignKey(a => a.QuizzId) // Foreign key is QuizzId in Attempt
-                     .IsRequired(); // Relationship is required (every Attempt must be part of a Quizz)
+                     .IsRequired() // Relationship is required (every Attempt must be part of a Quizz)
+                     .OnDelete(DeleteBehavior.Cascade);
         }
     }
 

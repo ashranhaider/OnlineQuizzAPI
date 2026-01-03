@@ -15,9 +15,9 @@ namespace OnlineQuizz.Persistence.Repositories
         {
         }
 
-        public async Task<List<Quizz>> GetPagedQuizzes(int page, int size)
+        public async Task<List<Quizz>> GetPagedQuizzes(string UserId, int page, int size)
         {
-            return await _dbContext.Quizzes.Skip((page - 1) * size).Take(size).AsNoTracking().ToListAsync();
+            return await _dbContext.Quizzes.Where(q => q.OwnerUserId == UserId && q.IsActive).Skip((page - 1) * size).OrderBy(q => q.CreatedDate).Take(size).AsNoTracking().ToListAsync();
         }
     }
 }

@@ -12,7 +12,7 @@ namespace OnlineQuizz.Application.UnitTests.Categories.Commands
     public class CreateQuizzTests
     {
         private readonly IMapper _mapper;
-        private readonly Mock<IAsyncRepository<Quizz>> _mockQuizzRepository;
+        private readonly Mock<IQuizzRepository> _mockQuizzRepository;
 
         public CreateQuizzTests()
         {

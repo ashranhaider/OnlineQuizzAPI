@@ -6,17 +6,21 @@ using OnlineQuizz.Domain.Entities;
 using Moq;
 using Shouldly;
 using OnlineQuizz.Application.Features.Quizzes.Queries.GetQuizzesList;
+using OnlineQuizz.Application.Contracts;
 
 namespace OnlineQuizz.Application.UnitTests.Categories.Queries
 {
     public class GetCategoriesListQueryHandlerTests
     {
         private readonly IMapper _mapper;
-        private readonly Mock<IAsyncRepository<Quizz>> _mockQuizzRepository;
+        private readonly Mock<ILoggedInUserService> _mockLoggedInUserService;
+        private readonly Mock<IQuizzRepository> _mockQuizzRepository;
 
         public GetCategoriesListQueryHandlerTests()
         {
             _mockQuizzRepository = RepositoryMocks.GetQuizzRepository();
+            _mockLoggedInUserService = new Mock<ILoggedInUserService>();
+
             var configurationProvider = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile<MappingProfile>();
@@ -28,7 +32,7 @@ namespace OnlineQuizz.Application.UnitTests.Categories.Queries
         [Fact]
         public async Task GetQuizzesListTest()
         {
-            var handler = new GetQuizzesQueryHandler(_mapper, _mockQuizzRepository.Object);
+            var handler = new GetQuizzesQueryHandler(_mapper, _mockQuizzRepository.Object, _mockLoggedInUserService.Object);
 
             var result = await handler.Handle(new GetQuizzesQuery(), CancellationToken.None);
 
