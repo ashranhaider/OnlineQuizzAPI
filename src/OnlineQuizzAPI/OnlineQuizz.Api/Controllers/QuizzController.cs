@@ -11,8 +11,8 @@ using OnlineQuizz.Domain.Entities;
 
 namespace OnlineQuizz.Api.Controllers
 {
-    [Route("api/[controller]/[action]")]
     [ApiController]
+    [Route("api/quizzes")]
     [Authorize]
     public class QuizzController : ControllerBase
     {
@@ -24,33 +24,29 @@ namespace OnlineQuizz.Api.Controllers
         }
         #region Quizzes
 
-        [HttpPost(Name = "AddQuizz")]
+        [HttpPost]
         public async Task<ActionResult<int>> Create([FromBody] CreateQuizzCommand createQuizzCommand)
         {
-            var response = await _mediator.Send(createQuizzCommand);
+            int response = await _mediator.Send(createQuizzCommand);
             return Ok(response);
         }
-        [HttpPut(Name = "UpdateQuizz")]
+        [HttpPut]
         public async Task<ActionResult<Quizz>> Update([FromBody] UpdateQuizzCommand updateQuizzCommand)
         {
-            var response = await _mediator.Send(updateQuizzCommand);
+            Quizz response = await _mediator.Send(updateQuizzCommand);
             return Ok(response);
         }
-        [HttpGet(Name = "GetQuizzes")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesDefaultResponseType]
-        public async Task<ActionResult<GetQuizzVM>> GetQuizzes()
+        [HttpGet]
+        public async Task<ActionResult<GetQuizzVM>> GetAll()
         {
-            var getQuizzesQuery = new GetQuizzesQuery() { };
-            var dtos = await _mediator.Send(getQuizzesQuery);
-
-            return Ok(dtos);
+            List<GetQuizzVM> quizzes = await _mediator.Send(new GetQuizzesQuery());
+            return Ok(quizzes);
         }
 
-        [HttpDelete(Name = "DeleteQuizz/{quizzId}")]
-        public async Task<ActionResult<Quizz>> Delete(int quizzId)
+        [HttpDelete]
+        public async Task<ActionResult<int>> Delete(int quizzId)
         {
-            var response = await _mediator.Send(new DeleteQuizzCommand {Id = quizzId });
+            int response = await _mediator.Send(new DeleteQuizzCommand {Id = quizzId });
             return Ok(response);
         }
 

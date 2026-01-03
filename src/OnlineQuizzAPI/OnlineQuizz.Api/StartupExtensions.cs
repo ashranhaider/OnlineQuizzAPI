@@ -48,7 +48,7 @@ namespace OnlineQuizz.Api
             app.UseSwagger(); // Only generates JSON
             if (app.Environment.IsDevelopment())
             {
-                
+
                 app.UseSwaggerUI(c =>
                 {
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "OnlineQuizz API");
@@ -60,7 +60,7 @@ namespace OnlineQuizz.Api
             app.UseHttpsRedirection();
 
             //app.UseRouting();
-            
+
             app.UseAuthentication();
 
             app.UseCustomExceptionHandler();
@@ -78,45 +78,38 @@ namespace OnlineQuizz.Api
         {
             services.AddSwaggerGen(c =>
             {
-                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                {
-                    Description = @"JWT Authorization header using the Bearer scheme. \r\n\r\n 
-                      Enter 'Bearer' [space] and then your token in the text input below.
-                      \r\n\r\nExample: 'Bearer 12345abcdef'",
-                    Name = "Authorization",
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.ApiKey,
-                    Scheme = "Bearer"
-                });
-
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement()
-                  {
-                    {
-                      new OpenApiSecurityScheme
-                      {
-                        Reference = new OpenApiReference
-                          {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = "Bearer"
-                          },
-                          Scheme = "oauth2",
-                          Name = "Bearer",
-                          In = ParameterLocation.Header,
-
-                        },
-                        new List<string>()
-                      }
-                    });
-
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Version = "v1",
                     Title = "OnlineQuizz API",
-
+                    Version = "v1"
                 });
 
-                c.OperationFilter<FileResultContentTypeOperationFilter>();
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http, // 🔥 IMPORTANT
+                    Scheme = "bearer",               // 🔥 lowercase
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "Enter JWT token only. Example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        Array.Empty<string>()
+                    }
+                });
             });
         }
+
     }
 }

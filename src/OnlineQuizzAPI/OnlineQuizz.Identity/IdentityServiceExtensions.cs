@@ -10,6 +10,7 @@ using OnlineQuizz.Application.Models.Authentication;
 using OnlineQuizz.Application.Responses;
 using OnlineQuizz.Identity.Models;
 using OnlineQuizz.Identity.Services;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 
@@ -79,11 +80,9 @@ namespace OnlineQuizz.Identity
                             .RequestServices
                             .GetRequiredService<UserManager<ApplicationUser>>();
 
-                        var userId = context.Principal?
-                            .FindFirst("uid")?.Value;
+                        string? userId = context.Principal?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-                        var stampClaim = context.Principal?
-                            .FindFirst("security_stamp")?.Value;
+                        string? stampClaim = context.Principal?.FindFirst("security_stamp")?.Value;
 
                         if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(stampClaim))
                         {

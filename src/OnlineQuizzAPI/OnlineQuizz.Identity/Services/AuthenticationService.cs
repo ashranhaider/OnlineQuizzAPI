@@ -63,7 +63,6 @@ namespace OnlineQuizz.Identity.Services
         #region Registration
         public async Task<RegistrationResponse> RegisterAsync(RegistrationRequest request)
         {
-            // These user existence checks might later move into Handler or Domain rule
             if (await _userManager.FindByNameAsync(request.UserName) != null)
                 throw new DomainException($"Username '{request.UserName}' already exists");
 
