@@ -17,7 +17,7 @@ namespace OnlineQuizz.Application.Profiles
     {
         public MappingProfile()
         {
-            CreateMap<Quizz, GetQuizzVM>().ReverseMap();
+            CreateMap<Quizz, QuizzVM>().ReverseMap();
             CreateMap<Quizz, CreateQuizzCommand>().ReverseMap();
             CreateMap<Quizz, UpdateQuizzCommand>().ReverseMap();
 

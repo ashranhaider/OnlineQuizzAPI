@@ -22,26 +22,38 @@ namespace OnlineQuizz.Persistence
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(OnlineQuizzDbContext).Assembly);
         }
 
-        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+        public override int SaveChanges()
+        {
+            ApplyAuditing();
+            return base.SaveChanges();
+        }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            ApplyAuditing();
+            return base.SaveChangesAsync(cancellationToken);
+        }
+
+        private void ApplyAuditing()
         {
             foreach (var entry in ChangeTracker.Entries<AuditableEntity>())
             {
-                switch (entry.State)
+                if (entry.State == EntityState.Added)
                 {
-                    case EntityState.Added:
-                        entry.Entity.CreatedDate = DateTime.Now;
-                        entry.Entity.CreatedBy = _loggedInUserService?.UserId;
-                        break;
-                    case EntityState.Modified:
-                        entry.Entity.LastModifiedDate = DateTime.Now;
-                        entry.Entity.LastModifiedBy = _loggedInUserService?.UserId;
-                        break;
+                    entry.Entity.CreatedDate = DateTime.UtcNow;
+                    entry.Entity.CreatedBy ??= _loggedInUserService?.UserId;
+                }
+                else if (entry.State == EntityState.Modified)
+                {
+                    entry.Entity.LastModifiedDate = DateTime.UtcNow;
+                    entry.Entity.LastModifiedBy = _loggedInUserService?.UserId;
                 }
             }
-            return base.SaveChangesAsync(cancellationToken);
         }
     }
 }

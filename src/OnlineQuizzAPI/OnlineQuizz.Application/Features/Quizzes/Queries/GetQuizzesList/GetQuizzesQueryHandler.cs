@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace OnlineQuizz.Application.Features.Quizzes.Queries.GetQuizzesList
 {
-    public class GetQuizzesQueryHandler : IRequestHandler<GetQuizzesQuery, List<GetQuizzVM>>
+    public class GetQuizzesQueryHandler : IRequestHandler<GetQuizzesQuery, GetQuizzVM>
     {
         private readonly IQuizzRepository _quizzRepository;
         private readonly IMapper _mapper;
@@ -24,12 +24,20 @@ namespace OnlineQuizz.Application.Features.Quizzes.Queries.GetQuizzesList
             _loggedInUserService = loggedInUserService;
         }
 
-        public async Task<List<GetQuizzVM>> Handle(GetQuizzesQuery request, CancellationToken cancellationToken)
+        public async Task<GetQuizzVM> Handle(GetQuizzesQuery request, CancellationToken cancellationToken)
         {
             string UserId = _loggedInUserService.UserId;
 
-            List<Quizz> allQuizzes = await _quizzRepository.GetPagedQuizzes(UserId, request.Page, request.Size);
-            return _mapper.Map<List<GetQuizzVM>>(allQuizzes);
+            List<Quizz> allQuizzes = await _quizzRepository.GetPagedQuizzes(UserId, request.Page, request.Size, cancellationToken);
+
+            GetQuizzVM response = new GetQuizzVM
+            {
+                Quizzes = _mapper.Map<List<QuizzVM>>(allQuizzes),
+                Total = await _quizzRepository.GetTotalQuizzesCount(UserId, cancellationToken),
+                Page = request.Page,
+                PageSize = request.Size
+            };
+            return response;
         }
     }
 }

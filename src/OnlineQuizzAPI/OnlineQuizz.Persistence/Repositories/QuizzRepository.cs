@@ -15,9 +15,20 @@ namespace OnlineQuizz.Persistence.Repositories
         {
         }
 
-        public async Task<List<Quizz>> GetPagedQuizzes(string UserId, int page, int size)
+        public async Task<List<Quizz>> GetPagedQuizzes(string UserId, int page, int size, CancellationToken cancellationToken)
         {
-            return await _dbContext.Quizzes.Where(q => q.OwnerUserId == UserId && q.IsActive).Skip((page - 1) * size).OrderBy(q => q.CreatedDate).Take(size).AsNoTracking().ToListAsync();
+            return await _dbContext.Quizzes
+                            .Where(q => q.OwnerUserId == UserId && q.IsActive)
+                            .OrderBy(q => q.CreatedDate)
+                            .Skip((page - 1) * size)
+                            .Take(size)
+                            .AsNoTracking()
+                            .ToListAsync(cancellationToken);
+        }
+        public async Task<int> GetTotalQuizzesCount(string UserId, CancellationToken cancellationToken = default)
+        {
+
+            return await _dbContext.Quizzes.Where(q => q.OwnerUserId == UserId && q.IsActive).CountAsync(cancellationToken);
         }
     }
 }

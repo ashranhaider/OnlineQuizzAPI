@@ -37,9 +37,9 @@ namespace OnlineQuizz.Api.Controllers
             return Ok(response);
         }
         [HttpGet]
-        public async Task<ActionResult<GetQuizzVM>> GetAll([FromQuery] GetQuizzesQuery quizzQuery)
+        public async Task<ActionResult<GetQuizzVM>> GetAll([FromQuery] GetQuizzesQuery quizzQuery, CancellationToken cancellationToken)
         {
-            List<GetQuizzVM> quizzes = await _mediator.Send(quizzQuery);
+            GetQuizzVM quizzes = await _mediator.Send(quizzQuery, cancellationToken);
             return Ok(quizzes);
         }
 
