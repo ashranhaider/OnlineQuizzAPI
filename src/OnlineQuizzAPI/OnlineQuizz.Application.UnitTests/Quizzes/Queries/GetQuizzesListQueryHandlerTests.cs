@@ -36,9 +36,9 @@ namespace OnlineQuizz.Application.UnitTests.Categories.Queries
 
             var result = await handler.Handle(new GetQuizzesQuery(), CancellationToken.None);
 
-            result.ShouldBeOfType<List<GetQuizzVM>>();
+            result.ShouldBeOfType<GetQuizzVM>();
 
-            result.Count.ShouldBe(4);
+            result.Total.ShouldBe(4);
         }
     }
 }

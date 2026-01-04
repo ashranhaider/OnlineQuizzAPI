@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using OnlineQuizz.Application.Contracts.Identity;
+using OnlineQuizz.Application.Exceptions;
 using OnlineQuizz.Application.Models.Authentication;
 using OnlineQuizz.Application.Responses;
 using OnlineQuizz.Identity.Models;
@@ -48,92 +49,33 @@ namespace OnlineQuizz.Identity
             });
 
             services.AddTransient<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<JwtBearerEventsHandler>();
 
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-            .AddJwtBearer(o =>
-            {
-                o.RequireHttpsMetadata = true; // 🔐 enable in prod
-                o.SaveToken = false;
-
-                o.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ClockSkew = TimeSpan.Zero,
-                    ValidIssuer = configuration["JwtSettings:Issuer"],
-                    ValidAudience = configuration["JwtSettings:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(configuration["JwtSettings:Key"]))
-                };
-
-                o.Events = new JwtBearerEvents
-                {
-                    OnTokenValidated = async context =>
+                    .AddJwtBearer(options =>
                     {
-                        var userManager = context.HttpContext
-                            .RequestServices
-                            .GetRequiredService<UserManager<ApplicationUser>>();
+                        options.RequireHttpsMetadata = true;
+                        options.SaveToken = false;
 
-                        string? userId = context.Principal?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-                        string? stampClaim = context.Principal?.FindFirst("security_stamp")?.Value;
-
-                        if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(stampClaim))
+                        options.TokenValidationParameters = new TokenValidationParameters
                         {
-                            context.Fail("Invalid token claims");
-                            return;
-                        }
+                            ValidateIssuerSigningKey = true,
+                            ValidateIssuer = true,
+                            ValidateAudience = true,
+                            ValidateLifetime = true,
+                            ClockSkew = TimeSpan.Zero,
+                            ValidIssuer = configuration["JwtSettings:Issuer"],
+                            ValidAudience = configuration["JwtSettings:Audience"],
+                            IssuerSigningKey = new SymmetricSecurityKey(
+                                Encoding.UTF8.GetBytes(configuration["JwtSettings:Key"]!))
+                        };
 
-                        var user = await userManager.FindByIdAsync(userId);
-
-                        if (user == null || user.SecurityStamp != stampClaim)
-                        {
-                            context.Fail("Token has been revoked");
-                        }
-                    },
-
-                    OnAuthenticationFailed = context =>
-                    {
-                        context.NoResult();
-                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                        context.Response.ContentType = "application/json";
-
-                        var response = ApiResponse<object>.Failure(
-                            "Authentication failed");
-
-                        return context.Response.WriteAsJsonAsync(response);
-                    },
-
-                    OnChallenge = context =>
-                    {
-                        context.HandleResponse();
-                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                        context.Response.ContentType = "application/json";
-
-                        var response = ApiResponse<object>.Failure(
-                            "Unauthorized");
-
-                        return context.Response.WriteAsJsonAsync(response);
-                    },
-
-                    OnForbidden = context =>
-                    {
-                        context.Response.StatusCode = StatusCodes.Status403Forbidden;
-                        context.Response.ContentType = "application/json";
-
-                        var response = ApiResponse<object>.Failure(
-                            "Forbidden");
-
-                        return context.Response.WriteAsJsonAsync(response);
-                    }
-                };
-            });
+                        options.EventsType = typeof(JwtBearerEventsHandler);
+                    });
         }
     }
 }

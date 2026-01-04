@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using OnlineQuizz.Application.Contracts.Identity;
@@ -14,15 +15,18 @@ namespace OnlineQuizz.Identity.Services
 {
     public class AuthenticationService : IAuthenticationService
     {
+        private readonly ILogger<AuthenticationService> _logger;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly JwtSettings _jwtSettings;
 
         public AuthenticationService(
+            ILogger<AuthenticationService> logger,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IOptions<JwtSettings> jwtSettings)
         {
+            _logger = logger;
             _userManager = userManager;
             _signInManager = signInManager;
             _jwtSettings = jwtSettings.Value;
@@ -129,7 +133,7 @@ namespace OnlineQuizz.Identity.Services
                 expires: DateTime.UtcNow.AddMinutes(_jwtSettings.DurationInMinutes),
                 signingCredentials: creds
             );
-
+            _logger.LogInformation("JWT expires at (UTC): {ExpiresUtc}", DateTime.UtcNow.AddMinutes(_jwtSettings.DurationInMinutes));
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
         #endregion

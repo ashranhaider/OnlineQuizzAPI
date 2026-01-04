@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
+using FluentValidation.Results;
 using MediatR;
 using OnlineQuizz.Application.Contracts;
 using OnlineQuizz.Application.Contracts.Persistence;
+using OnlineQuizz.Application.Exceptions;
+using OnlineQuizz.Application.Features.Quizzes.Commands.CreateQuizz;
 using OnlineQuizz.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -26,18 +29,18 @@ namespace OnlineQuizz.Application.Features.Quizzes.Queries.GetQuizzesList
 
         public async Task<GetQuizzVM> Handle(GetQuizzesQuery request, CancellationToken cancellationToken)
         {
-            string UserId = _loggedInUserService.UserId;
 
-            List<Quizz> allQuizzes = await _quizzRepository.GetPagedQuizzes(UserId, request.Page, request.Size, cancellationToken);
+            var userId = _loggedInUserService.UserId ?? throw new AuthenticationFailedException("User not authenticated.");
 
-            GetQuizzVM response = new GetQuizzVM
+            var (items, total) = await _quizzRepository.GetPagedQuizzesWithCount(userId, request.Page, request.Size, cancellationToken);
+
+            return new GetQuizzVM
             {
-                Quizzes = _mapper.Map<List<QuizzVM>>(allQuizzes),
-                Total = await _quizzRepository.GetTotalQuizzesCount(UserId, cancellationToken),
+                Quizzes = _mapper.Map<List<QuizzVM>>(items),
+                Total = total,
                 Page = request.Page,
                 PageSize = request.Size
             };
-            return response;
         }
     }
 }

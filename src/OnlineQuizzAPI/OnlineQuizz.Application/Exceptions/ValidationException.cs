@@ -16,5 +16,14 @@ namespace OnlineQuizz.Application.Exceptions
                     g => g.Select(e => e.ErrorMessage).ToArray()
                 );
         }
+        public ValidationException(List<ValidationFailure> errors)
+        {
+            Errors = errors
+                        .GroupBy(e => e.PropertyName)
+                        .ToDictionary(
+                            g => g.Key,
+                            g => g.Select(e => e.ErrorMessage).ToArray()
+                        );
+        }
     }
 }
