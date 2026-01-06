@@ -34,9 +34,18 @@ namespace OnlineQuizz.Api
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });
 
+            var corsOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
+            
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("Open", builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+                options.AddPolicy("FrontendApp", policy =>
+                {
+                    policy
+                        .WithOrigins(corsOrigins ?? [""])
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                    // .AllowCredentials(); // only if using cookies
+                });
             });
 
             return builder.Build();
@@ -45,34 +54,30 @@ namespace OnlineQuizz.Api
 
         public static WebApplication ConfigurePipeline(this WebApplication app)
         {
-            app.UseSwagger(); // Only generates JSON
+            app.UseCustomExceptionHandler();
+
             if (app.Environment.IsDevelopment())
             {
-
+                app.UseSwagger();
                 app.UseSwaggerUI(c =>
                 {
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "OnlineQuizz API");
                 });
             }
 
-            app.MapGet("/", () => Results.Ok("OnlineQuizz API is running"));
-
             app.UseHttpsRedirection();
 
-            //app.UseRouting();
+            app.UseCors("FrontendApp");
 
+            // 3. AUTHENTICATION & AUTHORIZATION
             app.UseAuthentication();
-
-            app.UseCustomExceptionHandler();
-
-            app.UseCors("Open");
-
             app.UseAuthorization();
 
+            // 4. ENDPOINTS
+            app.MapGet("/", () => Results.Ok("OnlineQuizz API is running"));
             app.MapControllers();
 
             return app;
-
         }
         private static void AddSwagger(IServiceCollection services)
         {
