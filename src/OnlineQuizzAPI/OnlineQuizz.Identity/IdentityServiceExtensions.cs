@@ -74,7 +74,7 @@ namespace OnlineQuizz.Identity
                                 Encoding.UTF8.GetBytes(configuration["JwtSettings:Key"]!))
                         };
 
-                        options.EventsType = typeof(JwtBearerEventsHandler);
+                        //options.EventsType = typeof(JwtBearerEventsHandler);
                     });
         }
     }
