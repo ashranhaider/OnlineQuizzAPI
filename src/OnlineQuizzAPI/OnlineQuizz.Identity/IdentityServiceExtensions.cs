@@ -9,7 +9,9 @@ using OnlineQuizz.Application.Contracts.Identity;
 using OnlineQuizz.Application.Exceptions;
 using OnlineQuizz.Application.Models.Authentication;
 using OnlineQuizz.Application.Responses;
+using OnlineQuizz.Identity.Contracts;
 using OnlineQuizz.Identity.Models;
+using OnlineQuizz.Identity.Repositories;
 using OnlineQuizz.Identity.Services;
 using System.Security.Claims;
 using System.Text;
@@ -49,6 +51,7 @@ namespace OnlineQuizz.Identity
             });
 
             services.AddTransient<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             services.AddScoped<JwtBearerEventsHandler>();
 
             services.AddAuthentication(options =>

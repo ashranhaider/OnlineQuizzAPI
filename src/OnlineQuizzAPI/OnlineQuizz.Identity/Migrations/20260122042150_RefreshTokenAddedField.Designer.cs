@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnlineQuizz.Identity;
 
@@ -11,9 +12,11 @@ using OnlineQuizz.Identity;
 namespace OnlineQuizz.Identity.Migrations
 {
     [DbContext(typeof(OnlineQuizzIdentityDbContext))]
-    partial class GloboTicketIdentityDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260122042150_RefreshTokenAddedField")]
+    partial class RefreshTokenAddedField
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -242,13 +245,13 @@ namespace OnlineQuizz.Identity.Migrations
                     b.Property<DateTime>("Expires")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("HashedToken")
+                    b.Property<bool>("IsRevoked")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Token")
                         .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
-
-                    b.Property<bool>("IsRevoked")
-                        .HasColumnType("bit");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -256,7 +259,7 @@ namespace OnlineQuizz.Identity.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("HashedToken")
+                    b.HasIndex("Token")
                         .IsUnique();
 
                     b.HasIndex("UserId");

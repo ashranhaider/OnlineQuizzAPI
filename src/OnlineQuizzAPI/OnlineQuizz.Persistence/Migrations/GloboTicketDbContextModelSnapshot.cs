@@ -96,7 +96,7 @@ namespace OnlineQuizz.Persistence.Migrations
 
                     b.HasIndex("QuizzId");
 
-                    b.ToTable("Attempts");
+                    b.ToTable("Attempts", (string)null);
                 });
 
             modelBuilder.Entity("OnlineQuizz.Domain.Entities.Question", b =>
@@ -144,7 +144,7 @@ namespace OnlineQuizz.Persistence.Migrations
 
                     b.HasIndex("QuizzId");
 
-                    b.ToTable("Questions");
+                    b.ToTable("Questions", (string)null);
                 });
 
             modelBuilder.Entity("OnlineQuizz.Domain.Entities.QuestionOption", b =>
@@ -186,7 +186,7 @@ namespace OnlineQuizz.Persistence.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("QuestionOption");
+                    b.ToTable("QuestionOption", (string)null);
                 });
 
             modelBuilder.Entity("OnlineQuizz.Domain.Entities.Quizz", b =>
@@ -240,7 +240,7 @@ namespace OnlineQuizz.Persistence.Migrations
 
                     b.HasIndex("OwnerUserId", "IsActive");
 
-                    b.ToTable("Quizzes");
+                    b.ToTable("Quizzes", (string)null);
                 });
 
             modelBuilder.Entity("OnlineQuizz.Domain.Entities.Answer", b =>

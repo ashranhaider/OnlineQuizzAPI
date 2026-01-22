@@ -4,7 +4,6 @@ using OnlineQuizz.Application.Contracts.Identity;
 using OnlineQuizz.Application.Features.Auth.Register.Commands;
 using OnlineQuizz.Application.Models.Authentication;
 using OnlineQuizz.Application.Responses;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace OnlineQuizz.Api.Controllers
 {
@@ -47,6 +46,20 @@ namespace OnlineQuizz.Api.Controllers
 
             return Ok(apiResponse);
         }
+        [HttpPost("refreshtoken")]
+        public async Task<ActionResult<ApiResponse<AuthenticationResponse>>> RefreshTokenAsync([FromBody] RefreshTokenRequest request)
+        {
+            AuthenticationResponse response = await _authenticationService.RefreshAsync(request.RefreshToken);
+
+            ApiResponse<AuthenticationResponse> apiResponse = new ApiResponse<AuthenticationResponse>
+            {
+                Data = response,
+                Message = "Authentication successful"
+            };
+
+            return Ok(apiResponse);
+        }
+
 
         [HttpPost("register")]
         public async Task<ActionResult<ApiResponse<RegistrationResponse>>> RegisterAsync([FromBody] RegisterCommand command)

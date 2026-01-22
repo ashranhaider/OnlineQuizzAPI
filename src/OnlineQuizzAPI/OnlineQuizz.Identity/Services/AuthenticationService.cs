@@ -1,14 +1,18 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using OnlineQuizz.Application.Contracts.Identity;
+using OnlineQuizz.Application.Contracts.Persistence;
 using OnlineQuizz.Application.Exceptions;
 using OnlineQuizz.Application.Features.Auth.Register.Commands;
 using OnlineQuizz.Application.Models.Authentication;
+using OnlineQuizz.Identity.Contracts;
 using OnlineQuizz.Identity.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace OnlineQuizz.Identity.Services
@@ -18,18 +22,21 @@ namespace OnlineQuizz.Identity.Services
         private readonly ILogger<AuthenticationService> _logger;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IRefreshTokenRepository _refreshTokenRepository;
         private readonly JwtSettings _jwtSettings;
 
         public AuthenticationService(
             ILogger<AuthenticationService> logger,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            IOptions<JwtSettings> jwtSettings)
+            IOptions<JwtSettings> jwtSettings,
+            IRefreshTokenRepository refreshTokenRepository)
         {
             _logger = logger;
             _userManager = userManager;
             _signInManager = signInManager;
             _jwtSettings = jwtSettings.Value;
+            _refreshTokenRepository = refreshTokenRepository;
         }
 
         #region Authentication / Login
@@ -47,22 +54,69 @@ namespace OnlineQuizz.Identity.Services
             if (!result.Succeeded)
                 throw new AuthenticationFailedException("Invalid email or password");
 
+            await _refreshTokenRepository.RevokeAllAsync(user.Id);
+
+            var createdToken = CreateRefreshToken(user.Id);
+            await _refreshTokenRepository.AddAsync(createdToken.RefreshToken);
+
+            return new AuthenticationResponse
+                {
+                    User = new AuthenticatedUser
+                    {
+                        Id = user.Id,
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
+                        Email = user.Email ?? "",
+                        UserName = user.UserName ?? user.Email ?? ""
+                    },
+                    AccessToken = await GenerateJwtToken(user),
+                    AccessTokenExpiresIn = DateTime.UtcNow.AddMinutes(_jwtSettings.DurationInMinutes),
+                    RefreshToken = createdToken.PlainToken
+                };
+        }
+        #endregion
+
+        #region Refresh Token
+
+        public async Task<AuthenticationResponse> RefreshAsync(string refreshToken)
+        {
+            var hashedToken = HashToken(refreshToken);
+            var existingToken = await _refreshTokenRepository.GetAsync(hashedToken);
+
+            if (existingToken == null)
+                throw new AuthenticationFailedException("Invalid refresh token");
+
+            if (existingToken.IsRevoked)
+            {
+                await _refreshTokenRepository.RevokeAllAsync(existingToken.UserId);
+                await _userManager.UpdateSecurityStampAsync(existingToken.User);
+                throw new AuthenticationFailedException("Invalid refresh token");
+            }
+
+            if (existingToken.Expires <= DateTime.UtcNow)
+                throw new AuthenticationFailedException("Refresh token expired");
+
+            // Rotate token
+            var createdToken = CreateRefreshToken(existingToken.UserId);
+            await _refreshTokenRepository.RotateAsync(existingToken, createdToken.RefreshToken);
+
             return new AuthenticationResponse
             {
                 User = new AuthenticatedUser
                 {
-                    Id = user.Id,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    Email = user.Email ?? "",
-                    UserName = user.UserName ?? user.Email ?? ""
+                    Id = existingToken.User.Id,
+                    FirstName = existingToken.User.FirstName,
+                    LastName = existingToken.User.LastName,
+                    Email = existingToken.User.Email ?? "",
+                    UserName = existingToken.User.UserName ?? ""
                 },
-                AccessToken = await GenerateJwtToken(user),
-                ExpiresIn = DateTime.UtcNow.AddMinutes(_jwtSettings.DurationInMinutes)
+                AccessToken = await GenerateJwtToken(existingToken.User),
+                RefreshToken = createdToken.PlainToken,
+                AccessTokenExpiresIn = DateTime.UtcNow.AddMinutes(_jwtSettings.DurationInMinutes)
             };
         }
-        #endregion
 
+        #endregion
 
         #region Registration
         public async Task<RegistrationResponse> RegisterAsync(RegistrationRequest request)
@@ -102,8 +156,7 @@ namespace OnlineQuizz.Identity.Services
         }
         #endregion
 
-
-        #region JWT Token
+        #region private methods
         private async Task<string> GenerateJwtToken(ApplicationUser user)
         {
             if (string.IsNullOrEmpty(user.SecurityStamp))
@@ -136,6 +189,30 @@ namespace OnlineQuizz.Identity.Services
             _logger.LogInformation("JWT expires at (UTC): {ExpiresUtc}", DateTime.UtcNow.AddMinutes(_jwtSettings.DurationInMinutes));
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
+        private (RefreshToken RefreshToken, string PlainToken) CreateRefreshToken(string userId)
+        {
+            var randomBytes = RandomNumberGenerator.GetBytes(64);
+            var plainToken = Convert.ToBase64String(randomBytes);
+            var tokenHash = HashToken(plainToken);
+            return (new RefreshToken
+                {
+                    HashedToken = tokenHash,
+                    Expires = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenDurationInDays),
+                    CreatedDate = DateTime.UtcNow,
+                    IsRevoked = false,
+                    UserId = userId
+                }, plainToken);
+        }
+
+        private static string HashToken(string token)
+        {
+            var tokenBytes = Encoding.UTF8.GetBytes(token);
+            var hashBytes = SHA256.HashData(tokenBytes);
+            return Convert.ToBase64String(hashBytes);
+        }
+
         #endregion
+
     }
 }

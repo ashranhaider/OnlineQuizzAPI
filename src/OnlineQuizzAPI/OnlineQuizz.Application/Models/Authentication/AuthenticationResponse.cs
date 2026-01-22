@@ -4,8 +4,9 @@ namespace OnlineQuizz.Application.Models.Authentication
     public class AuthenticationResponse
     {
         public required AuthenticatedUser User { get; set; }
-        public string AccessToken { get; set; } = string.Empty;
-        public DateTime ExpiresIn { get; set; }
+        public required string AccessToken { get; set; }
+        public DateTimeOffset AccessTokenExpiresIn { get; set; }
+        public required string RefreshToken { get; set; }
     }
     public class AuthenticatedUser
     {

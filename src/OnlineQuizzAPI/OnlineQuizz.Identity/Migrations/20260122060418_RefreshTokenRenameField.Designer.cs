@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnlineQuizz.Identity;
 
@@ -11,9 +12,11 @@ using OnlineQuizz.Identity;
 namespace OnlineQuizz.Identity.Migrations
 {
     [DbContext(typeof(OnlineQuizzIdentityDbContext))]
-    partial class GloboTicketIdentityDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260122060418_RefreshTokenRenameField")]
+    partial class RefreshTokenRenameField
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

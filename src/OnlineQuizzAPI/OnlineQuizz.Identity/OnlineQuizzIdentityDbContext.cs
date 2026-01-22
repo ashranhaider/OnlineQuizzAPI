@@ -19,11 +19,11 @@ namespace OnlineQuizz.Identity
             {
                 entity.HasKey(rt => rt.Id);
 
-                entity.Property(rt => rt.Token)
+                entity.Property(rt => rt.HashedToken)
                     .IsRequired()
                     .HasMaxLength(256);
 
-                entity.HasIndex(rt => rt.Token)
+                entity.HasIndex(rt => rt.HashedToken)
                     .IsUnique();
 
                 entity.HasOne(rt => rt.User)
