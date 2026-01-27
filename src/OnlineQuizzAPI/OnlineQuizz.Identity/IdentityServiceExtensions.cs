@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using OnlineQuizz.Application.Contracts.Identity;
 using OnlineQuizz.Application.Exceptions;
+using OnlineQuizz.Application.Models;
 using OnlineQuizz.Application.Models.Authentication;
 using OnlineQuizz.Application.Responses;
 using OnlineQuizz.Identity.Contracts;
@@ -24,6 +25,7 @@ namespace OnlineQuizz.Identity
         public static void AddIdentityServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
+            services.Configure<GoogleAuthSettings>(configuration.GetSection("GoogleAuth"));
 
             services.AddDbContext<OnlineQuizzIdentityDbContext>(options =>
                  options.UseSqlServer(

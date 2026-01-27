@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using OnlineQuizz.Application.Contracts.Identity;
-using OnlineQuizz.Application.Contracts.Persistence;
 using OnlineQuizz.Application.Exceptions;
 using OnlineQuizz.Application.Features.Auth.Register.Commands;
 using OnlineQuizz.Application.Models.Authentication;
@@ -14,6 +12,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Google.Apis.Auth;
+using OnlineQuizz.Application.Models;
 
 namespace OnlineQuizz.Identity.Services
 {
@@ -24,18 +24,21 @@ namespace OnlineQuizz.Identity.Services
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IRefreshTokenRepository _refreshTokenRepository;
         private readonly JwtSettings _jwtSettings;
+        private readonly GoogleAuthSettings _googleAuthSettings;
 
         public AuthenticationService(
             ILogger<AuthenticationService> logger,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IOptions<JwtSettings> jwtSettings,
+            IOptions<GoogleAuthSettings> googleAuthSettings,
             IRefreshTokenRepository refreshTokenRepository)
         {
             _logger = logger;
             _userManager = userManager;
             _signInManager = signInManager;
             _jwtSettings = jwtSettings.Value;
+            _googleAuthSettings = googleAuthSettings.Value;
             _refreshTokenRepository = refreshTokenRepository;
         }
 
@@ -74,6 +77,90 @@ namespace OnlineQuizz.Identity.Services
                     RefreshToken = createdToken.PlainToken
                 };
         }
+        #endregion
+
+        #region Google Authentication
+
+        public async Task<AuthenticationResponse> GoogleLoginAsync(string idToken)
+        {
+            var settings = new GoogleJsonWebSignature.ValidationSettings()
+            {
+                Audience = new List<string> { _googleAuthSettings.ClientId }
+            };
+
+            // Validate token with Google
+            try
+            {
+                var payload = await GoogleJsonWebSignature.ValidateAsync(idToken, settings);
+                var email = payload.Email;
+                var name = payload.Name;
+                var googleId = payload.Subject;
+
+                if (string.IsNullOrEmpty(email))
+                    throw new AuthenticationFailedException("Google account has no email");
+
+                // Check if user exists
+                var user = await _userManager.FindByEmailAsync(email);
+                if (user != null && user.GoogleId == null)
+                {
+                    user.GoogleId = googleId;
+                    await _userManager.UpdateAsync(user);
+                }
+                else if (user == null)
+                {
+                    var names = payload.Name?.Split(' ', 2) ?? new[] { "User" };
+                    string firstName = names[0];
+                    string lastName = names.Length > 1 ? names[1] : "";
+
+                    user = new ApplicationUser
+                    {
+                        Email = email,
+                        FirstName = firstName,
+                        LastName = lastName,
+                        UserName = email,
+                        EmailConfirmed = true,
+                        GoogleId = googleId
+                    };
+
+                    var result = await _userManager.CreateAsync(user);
+                    if (!result.Succeeded)
+                        throw new Exception("User creation failed");
+
+                    await _userManager.AddToRoleAsync(user, "User");
+                }
+
+                await _refreshTokenRepository.RevokeAllAsync(user.Id);
+                // Issue JWT & refresh token
+                var createdToken = CreateRefreshToken(user.Id);
+                await _refreshTokenRepository.AddAsync(createdToken.RefreshToken);
+
+                return new AuthenticationResponse
+                {
+                    User = new AuthenticatedUser
+                    {
+                        Id = user.Id,
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
+                        Email = user.Email ?? "",
+                        UserName = user.UserName ?? user.Email ?? ""
+                    },
+                    AccessToken = await GenerateJwtToken(user),
+                    AccessTokenExpiresIn = DateTime.UtcNow.AddMinutes(_jwtSettings.DurationInMinutes),
+                    RefreshToken = createdToken.PlainToken
+                };
+            }
+            catch (InvalidJwtException)
+            {
+                throw new AuthenticationFailedException("Invalid Google token");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Google login failed");
+                throw;
+            }
+
+        }
+
         #endregion
 
         #region Refresh Token

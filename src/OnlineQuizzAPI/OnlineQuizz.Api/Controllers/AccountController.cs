@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using OnlineQuizz.Application.Contracts.Identity;
 using OnlineQuizz.Application.Features.Auth.Register.Commands;
 using OnlineQuizz.Application.Models.Authentication;
+using OnlineQuizz.Application.Requests;
 using OnlineQuizz.Application.Responses;
 
 namespace OnlineQuizz.Api.Controllers
@@ -38,6 +39,19 @@ namespace OnlineQuizz.Api.Controllers
         {
             AuthenticationResponse response = await _authenticationService.AuthenticateAsync(request);
             
+            ApiResponse<AuthenticationResponse> apiResponse = new ApiResponse<AuthenticationResponse>
+            {
+                Data = response,
+                Message = "Authentication successful"
+            };
+
+            return Ok(apiResponse);
+        }
+        [HttpPost("google")]
+        public async Task<ActionResult<ApiResponse<AuthenticationResponse>>> GoogleLogin(GoogleAuthRequest request)
+        {
+            var response = await _authenticationService.GoogleLoginAsync(request.IdToken);
+
             ApiResponse<AuthenticationResponse> apiResponse = new ApiResponse<AuthenticationResponse>
             {
                 Data = response,
