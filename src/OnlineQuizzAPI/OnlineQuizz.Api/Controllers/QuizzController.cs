@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using OnlineQuizz.Application.Features.Quizzes.Commands.CreateQuizz;
 using OnlineQuizz.Application.Features.Quizzes.Commands.DeleteQuizz;
 using OnlineQuizz.Application.Features.Quizzes.Commands.UpdateQuizz;
+using OnlineQuizz.Application.Features.Quizzes.Queries.GetQuizzById;
 using OnlineQuizz.Application.Features.Quizzes.Queries.GetQuizzesList;
 using OnlineQuizz.Application.Features.QuizzQuestions.Commands;
 using OnlineQuizz.Application.Features.QuizzQuestions.Queries;
@@ -42,11 +43,17 @@ namespace OnlineQuizz.Api.Controllers
             GetQuizzVM quizzes = await _mediator.Send(quizzQuery, cancellationToken);
             return Ok(quizzes);
         }
-
-        [HttpDelete]
-        public async Task<ActionResult<int>> Delete(int quizzId)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<QuizzVM>> GetById([FromRoute] int id, CancellationToken cancellationToken)
         {
-            int response = await _mediator.Send(new DeleteQuizzCommand {Id = quizzId });
+            var quizzes = await _mediator.Send(new GetQuizzByIdQuery { Id = id}, cancellationToken);
+            return Ok(quizzes);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<int>> Delete(int id)
+        {
+            int response = await _mediator.Send(new DeleteQuizzCommand {Id = id });
             return Ok(response);
         }
 

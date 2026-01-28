@@ -38,7 +38,7 @@ namespace OnlineQuizz.Persistence.Repositories
         public async Task<(List<Quizz>, int)> GetPagedQuizzesWithCount(string userId, int? page, int? size, CancellationToken cancellationToken)
         {
             var baseQuery = _dbContext.Quizzes
-                .Where(q => q.OwnerUserId == userId && q.IsActive)
+                .Where(q => q.OwnerUserId == userId)
                 .OrderByDescending(q => q.CreatedDate)
                 .AsNoTracking();
 

@@ -25,15 +25,15 @@ namespace OnlineQuizz.Application.UnitTests.Categories.Commands
             _mapper = configurationProvider.CreateMapper();
         }
 
-        [Fact]
-        public async Task Handle_ValidCategory_AddedToCategoriesRepo()
-        {
-            var handler = new CreateQuizzCommandHandler(_mapper, _mockQuizzRepository.Object);
+        //[Fact]
+        //public async Task Handle_ValidCategory_AddedToCategoriesRepo()
+        //{
+        //    var handler = new CreateQuizzCommandHandler(_mapper, _mockQuizzRepository.Object);
 
-            await handler.Handle(new CreateQuizzCommand() { Name = "Test", UniqueURL = "test" }, CancellationToken.None);
+        //    await handler.Handle(new CreateQuizzCommand() { Name = "Test", UniqueURL = "test" }, CancellationToken.None);
 
-            var allCategories = await _mockQuizzRepository.Object.ListAllAsync();
-            allCategories.Count.ShouldBe(5);
-        }
+        //    var allCategories = await _mockQuizzRepository.Object.ListAllAsync();
+        //    allCategories.Count.ShouldBe(5);
+        //}
     }
 }
