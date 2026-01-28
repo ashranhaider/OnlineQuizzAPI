@@ -14,6 +14,7 @@ namespace OnlineQuizz.Persistence.Repositories
         public QuizzRepository(OnlineQuizzDbContext dbContext) : base(dbContext)
         {
         }
+
         /// <summary>
         /// Returns a paginated list of quizzes along with the total quiz count
         /// for a specific user.
@@ -34,19 +35,22 @@ namespace OnlineQuizz.Persistence.Repositories
         /// </list>
         /// </returns>
 
-        public async Task<(List<Quizz>, int)> GetPagedQuizzesWithCount(string userId, int page, int size, CancellationToken cancellationToken)
+        public async Task<(List<Quizz>, int)> GetPagedQuizzesWithCount(string userId, int? page, int? size, CancellationToken cancellationToken)
         {
             var baseQuery = _dbContext.Quizzes
                 .Where(q => q.OwnerUserId == userId && q.IsActive)
+                .OrderByDescending(q => q.CreatedDate)
                 .AsNoTracking();
 
             var total = await baseQuery.CountAsync(cancellationToken);
-
-            var items = await baseQuery
-                .OrderByDescending(q => q.CreatedDate)
-                .Skip((page - 1) * size)
-                .Take(size)
-                .ToListAsync(cancellationToken);
+            
+            if(page.HasValue && size.HasValue)
+            {
+                baseQuery = baseQuery
+                .Skip((page.Value - 1) * size.Value)
+                .Take(size.Value);
+            }
+            var items = await baseQuery.ToListAsync(cancellationToken);
 
             return (items, total);
         }

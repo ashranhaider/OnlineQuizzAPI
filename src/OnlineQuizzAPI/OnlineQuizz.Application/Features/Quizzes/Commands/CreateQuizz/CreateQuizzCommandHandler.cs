@@ -2,6 +2,7 @@
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using OnlineQuizz.Application.Contracts;
 using OnlineQuizz.Application.Contracts.Infrastructure;
 using OnlineQuizz.Application.Contracts.Persistence;
 using OnlineQuizz.Domain.Entities;
@@ -15,27 +16,29 @@ namespace OnlineQuizz.Application.Features.Quizzes.Commands.CreateQuizz
 {
     public class CreateQuizzCommandHandler : IRequestHandler<CreateQuizzCommand, int>
     {
-        private readonly IAsyncRepository<Quizz> _quizzRepository;
+        private readonly IQuizzRepository _quizzRepository;
         private readonly IMapper _mapper;
-
-        public CreateQuizzCommandHandler(IMapper mapper, IAsyncRepository<Quizz> quizzRepository)
+        private readonly ILoggedInUserService _loggedInUserService;
+        public CreateQuizzCommandHandler(IMapper mapper, IQuizzRepository quizzRepository, ILoggedInUserService loggedInUserService)
         {
             _mapper = mapper;
             _quizzRepository = quizzRepository;
+            _loggedInUserService = loggedInUserService;
         }
 
         public async Task<int> Handle(CreateQuizzCommand request, CancellationToken cancellationToken)
         {
-            var validator = new CreateQuizzCommandValidator();
-            var validationResult = await validator.ValidateAsync(request);
-
-            if (validationResult.Errors.Count > 0)
-                throw new Exceptions.ValidationException(validationResult);
-
             var @quizz = _mapper.Map<Quizz>(request);
 
+            if (!String.IsNullOrEmpty(_loggedInUserService.UserId))
+            {
+                quizz.OwnerUserId = _loggedInUserService.UserId;
+            }
 
             @quizz = await _quizzRepository.AddAsync(@quizz);
+
+            quizz.UniqueURL = $"/startquiz/{@quizz.Id}";
+            await _quizzRepository.UpdateAsync(quizz);
 
             return quizz.Id;
         }
