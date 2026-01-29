@@ -24,7 +24,10 @@ namespace OnlineQuizz.Application.Profiles
             CreateMap<Question, GetQuestionsVM>()
                 .ForMember(dest => dest.QuestionType, opt => opt.MapFrom(src => src.QuestionType.ToString()))
                 .ReverseMap();
-            CreateMap<Question, CreateQuestionCommand>().ReverseMap();
+            CreateMap<CreateQuestionCommand, Question>()
+                .ForMember(dest => dest.QuestionOptions, opt => opt.Ignore())
+                .ForMember(dest => dest.Answers, opt => opt.Ignore())
+                .ForMember(dest => dest.Quizz, opt => opt.Ignore());
             CreateMap<Question, UpdateQuestionCommand>().ReverseMap();
             CreateMap<Question, DeleteQuestionCommand>().ReverseMap();
 

@@ -14,6 +14,8 @@ namespace OnlineQuizz.Application.Features.QuizzQuestions.Commands.Create
     {
         public string QuestionText { get; set; } = "";
         public QuestionTypes QuestionType { get; set; }
+        public bool IsActive { get; set; }
+        public double Score { get; set; }
         //public byte[] QuestionImage { get; set; } = new byte[0];
         public int QuizzId { get; set; }
     }
