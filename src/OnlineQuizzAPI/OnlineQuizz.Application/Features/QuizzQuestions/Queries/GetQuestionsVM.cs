@@ -14,6 +14,8 @@ namespace OnlineQuizz.Application.Features.QuizzQuestions.Queries
         public string QuestionText { get; set; } = String.Empty;
         public string QuestionType { get; set; } = String.Empty;
         public byte[] QuestionImage { get; set; } = new byte[0];
+        public bool IsActive { get; set; }
+        public double Score { get; set; }
         public int QuizzId { get; set; }
         public string QuizzName { get; set; } = String.Empty;
         public List<QuestionOptionsVM> QuestionOptions { get; set; } = new List<QuestionOptionsVM>();

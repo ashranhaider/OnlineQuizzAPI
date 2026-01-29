@@ -3,6 +3,7 @@ using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using OnlineQuizz.Application.Contracts.Persistence;
+using OnlineQuizz.Application.Exceptions;
 using OnlineQuizz.Application.Features.Quizzes.Commands.UpdateQuizz;
 using OnlineQuizz.Domain.Entities;
 using System;
@@ -33,7 +34,14 @@ namespace OnlineQuizz.Application.Features.QuizzQuestions.Commands.Update
             if (validationResult.Errors.Count > 0)
                 throw new Exceptions.ValidationException(validationResult);
 
-            Question question = _mapper.Map<Question>(request);
+            var question = await _asyncRepository.GetByIdAsync(request.Id);
+
+            if (question == null)
+                throw new NotFoundException(nameof(Question), request.Id);
+
+            // 🔹 STEP 2 — Map INTO existing object
+            _mapper.Map(request, question);
+
             await _asyncRepository.UpdateAsync(question);
             //try
             //{
