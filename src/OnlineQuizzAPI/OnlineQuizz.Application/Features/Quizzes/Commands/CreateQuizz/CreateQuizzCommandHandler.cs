@@ -37,9 +37,6 @@ namespace OnlineQuizz.Application.Features.Quizzes.Commands.CreateQuizz
 
             @quizz = await _quizzRepository.AddAsync(@quizz);
 
-            quizz.UniqueURL = $"/startquiz/{@quizz.Id}";
-            await _quizzRepository.UpdateAsync(quizz);
-
             return quizz.Id;
         }
     }

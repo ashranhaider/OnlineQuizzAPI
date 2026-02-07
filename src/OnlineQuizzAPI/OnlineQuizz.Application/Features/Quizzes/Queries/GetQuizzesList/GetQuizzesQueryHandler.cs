@@ -5,6 +5,7 @@ using OnlineQuizz.Application.Contracts;
 using OnlineQuizz.Application.Contracts.Persistence;
 using OnlineQuizz.Application.Exceptions;
 using OnlineQuizz.Application.Features.Quizzes.Commands.CreateQuizz;
+using OnlineQuizz.Application.Helpers;
 using OnlineQuizz.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -34,9 +35,15 @@ namespace OnlineQuizz.Application.Features.Quizzes.Queries.GetQuizzesList
 
             var (items, total) = await _quizzRepository.GetPagedQuizzesWithCount(userId, request.Page, request.Size, cancellationToken);
 
+            var quizzes = _mapper.Map<List<QuizzVM>>(items);
+            foreach (var quizz in quizzes)
+            {
+                quizz.UniqueURL = QuizzUrlBuilder.Build(quizz.Id);
+            }
+
             return new GetQuizzVM
             {
-                Quizzes = _mapper.Map<List<QuizzVM>>(items),
+                Quizzes = quizzes,
                 Total = total,
                 Page = request.Page,
                 PageSize = request.Size

@@ -21,16 +21,6 @@ namespace OnlineQuizz.Persistence.EntityConfigurations
                    .IsRequired() // Make it required
                    .HasMaxLength(200); // Example max length for quiz name
 
-            // Configure URL as required and with a max length
-            builder.Property(qz => qz.URL)
-                   .IsRequired(false)
-                   .HasMaxLength(500); // Example max length for URL
-
-            // Configure UniqueURL as optional but unique
-            builder.Property(qz => qz.UniqueURL)
-                   .IsRequired(false)
-                   .HasMaxLength(500);
-
             builder.Property(q => q.OwnerUserId)
                    .IsRequired()
                    .HasMaxLength(450);
@@ -43,8 +33,6 @@ namespace OnlineQuizz.Persistence.EntityConfigurations
 
             builder.Property(q => q.CreatedDate)
                    .IsRequired();
-
-            builder.HasIndex(qz => qz.UniqueURL).IsUnique();
 
             builder.HasIndex(q => new { q.OwnerUserId, q.IsActive });
 

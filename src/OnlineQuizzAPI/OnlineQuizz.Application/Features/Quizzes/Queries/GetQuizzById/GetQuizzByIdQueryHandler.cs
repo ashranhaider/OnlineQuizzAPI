@@ -2,6 +2,7 @@ using AutoMapper;
 using MediatR;
 using OnlineQuizz.Application.Contracts.Persistence;
 using OnlineQuizz.Application.Exceptions;
+using OnlineQuizz.Application.Helpers;
 using OnlineQuizz.Application.Features.QuizzQuestions.Queries;
 using System.Collections.Generic;
 using System.Threading;
@@ -34,7 +35,7 @@ namespace OnlineQuizz.Application.Features.Quizzes.Queries.GetQuizzById
             {
                 Id = quizz.Id,
                 Name = quizz.Name,
-                UniqueURL = quizz.UniqueURL,
+                UniqueURL = QuizzUrlBuilder.Build(quizz.Id),
                 IsActive = quizz.IsActive,
                 Questions = _mapper.Map<List<GetQuestionsVM>>(questions)
             };

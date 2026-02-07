@@ -20,9 +20,6 @@ namespace OnlineQuizz.Application.Features.Quizzes.Commands.UpdateQuizz
                 .NotEmpty().WithMessage("{PropertyName} is required.")
                 .NotNull()
                 .MaximumLength(50).WithMessage("{PropertyName} must not exceed 50 characters.");
-
-            RuleFor(p => p.UniqueURL)
-                .MaximumLength(200).WithMessage("{PropertyName} must not exceed 200 characters.");
             
             RuleFor(q => q.IsActive)
                 .NotNull();

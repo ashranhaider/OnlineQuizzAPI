@@ -14,26 +14,22 @@ namespace OnlineQuizz.Application.UnitTests.Mocks
                 new Quizz
                 {
                     Id = 1,
-                    Name = "Concerts",
-                    UniqueURL = "concerts"
+                    Name = "Concerts"
                 },
                 new Quizz
                 {
                     Id = 2,
-                    Name = "Musicals",
-                    UniqueURL = "musicals"
+                    Name = "Musicals"
                 },
                 new Quizz
                 {
                     Id = 3,
-                    Name = "Conferences",
-                    UniqueURL = "conferences"
+                    Name = "Conferences"
                 },
                  new Quizz
                 {
                     Id = 4,
-                    Name = "Plays",
-                    UniqueURL = "plays"
+                    Name = "Plays"
                 }
             };
 

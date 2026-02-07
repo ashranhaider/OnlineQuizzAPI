@@ -12,7 +12,6 @@ namespace OnlineQuizz.Application.Features.Quizzes.Commands.UpdateQuizz
     {
         public int Id { get; set; }
         public string Name { get; set; } = String.Empty;
-        public string UniqueURL { get; set; } = String.Empty;
         public bool IsActive { get; set; }
     }
 }

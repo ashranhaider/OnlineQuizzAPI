@@ -11,7 +11,6 @@ namespace OnlineQuizz.Application.Features.Quizzes.Commands.CreateQuizz
     public class CreateQuizzCommand : IRequest<int>
     {
         public string Name { get; set; }
-        public string UniqueURL { get; set; }
         public bool IsActive { get; set; }
     }
 }

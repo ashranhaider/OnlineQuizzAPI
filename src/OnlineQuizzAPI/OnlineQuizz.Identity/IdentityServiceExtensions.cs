@@ -76,7 +76,9 @@ namespace OnlineQuizz.Identity
                             ValidIssuer = configuration["JwtSettings:Issuer"],
                             ValidAudience = configuration["JwtSettings:Audience"],
                             IssuerSigningKey = new SymmetricSecurityKey(
-                                Encoding.UTF8.GetBytes(configuration["JwtSettings:Key"]!))
+                                Encoding.UTF8.GetBytes(configuration["JwtSettings:Key"]!)),
+                            NameClaimType = ClaimTypes.NameIdentifier,   
+                            RoleClaimType = ClaimTypes.Role
                         };
 
                         //options.EventsType = typeof(JwtBearerEventsHandler);

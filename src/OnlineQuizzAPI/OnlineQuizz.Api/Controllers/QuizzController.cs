@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OnlineQuizz.Application.Contracts;
 using OnlineQuizz.Application.Features.Quizzes.Commands.CreateQuizz;
 using OnlineQuizz.Application.Features.Quizzes.Commands.DeleteQuizz;
 using OnlineQuizz.Application.Features.Quizzes.Commands.UpdateQuizz;
@@ -9,6 +10,8 @@ using OnlineQuizz.Application.Features.Quizzes.Queries.GetQuizzesList;
 using OnlineQuizz.Application.Features.QuizzQuestions.Commands;
 using OnlineQuizz.Application.Features.QuizzQuestions.Queries;
 using OnlineQuizz.Domain.Entities;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace OnlineQuizz.Api.Controllers
 {
@@ -18,12 +21,26 @@ namespace OnlineQuizz.Api.Controllers
     public class QuizzController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly ILoggedInUserService _loggedInUserService;
 
-        public QuizzController(IMediator mediator)
+        public QuizzController(IMediator mediator, ILoggedInUserService loggedInUserService)
         {
             _mediator = mediator;
+            _loggedInUserService = loggedInUserService;
         }
         #region Quizzes
+        [Authorize]
+        [HttpGet("debug/whoami")]
+        public IActionResult WhoAmI()
+        {
+            return Ok(new
+            {
+                Authenticated = User.Identity?.IsAuthenticated,
+                NameId = User.FindFirstValue(ClaimTypes.NameIdentifier),
+                Sub = User.FindFirstValue(JwtRegisteredClaimNames.Sub),
+                Claims = User.Claims.Select(c => new { c.Type, c.Value }).ToList()
+            });
+        }
 
         [HttpPost]
         public async Task<ActionResult<int>> Create([FromBody] CreateQuizzCommand createQuizzCommand)

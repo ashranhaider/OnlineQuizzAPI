@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using MediatR;
+using OnlineQuizz.Application.Contracts;
 using OnlineQuizz.Application.Contracts.Infrastructure;
 using OnlineQuizz.Application.Contracts.Persistence;
 using OnlineQuizz.Domain.Entities;
@@ -11,12 +12,14 @@ namespace OnlineQuizz.Application.Features.QuizzQuestions.Commands.Create
     public class CreateQuestionCommandHandler : IRequestHandler<CreateQuestionCommand, int>
     {
         private readonly IAsyncRepository<Question> _questionRepository;
+        private readonly ILoggedInUserService _loggedInUserService;
         private readonly IMapper _mapper;
 
-        public CreateQuestionCommandHandler(IMapper mapper, IAsyncRepository<Question> questionRepository)
+        public CreateQuestionCommandHandler(IMapper mapper, IAsyncRepository<Question> questionRepository, ILoggedInUserService loggedInUserService)
         {
             _mapper = mapper;
             _questionRepository = questionRepository;
+            _loggedInUserService = loggedInUserService;
         }
 
         public async Task<int> Handle(CreateQuestionCommand request, CancellationToken cancellationToken)
@@ -30,7 +33,7 @@ namespace OnlineQuizz.Application.Features.QuizzQuestions.Commands.Create
             var question = _mapper.Map<Question>(request);
 
             question.Quizz = null;
-
+            question.CreatedBy = _loggedInUserService.UserId;
             question = await _questionRepository.AddAsync(question);
 
             return question.Id;
