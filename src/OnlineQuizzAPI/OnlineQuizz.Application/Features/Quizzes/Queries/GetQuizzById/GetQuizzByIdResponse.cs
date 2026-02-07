@@ -8,6 +8,7 @@ namespace OnlineQuizz.Application.Features.Quizzes.Queries.GetQuizzById
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string UniqueURL { get; set; } = string.Empty;
+        public int? TimeAllowed { get; set; }
         public bool IsActive { get; set; }
         public List<GetQuestionsVM> Questions { get; set; } = new List<GetQuestionsVM>();
     }

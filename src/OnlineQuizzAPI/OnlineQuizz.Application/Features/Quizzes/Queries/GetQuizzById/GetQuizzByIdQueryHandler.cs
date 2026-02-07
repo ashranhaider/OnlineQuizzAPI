@@ -36,6 +36,7 @@ namespace OnlineQuizz.Application.Features.Quizzes.Queries.GetQuizzById
                 Id = quizz.Id,
                 Name = quizz.Name,
                 UniqueURL = QuizzUrlBuilder.Build(quizz.Id),
+                TimeAllowed = quizz.TimeAllowed,
                 IsActive = quizz.IsActive,
                 Questions = _mapper.Map<List<GetQuestionsVM>>(questions)
             };

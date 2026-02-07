@@ -12,6 +12,7 @@ namespace OnlineQuizz.Application.Features.Quizzes.Commands.UpdateQuizz
     {
         public int Id { get; set; }
         public string Name { get; set; } = String.Empty;
+        public int? TimeAllowed { get; set; }
         public bool IsActive { get; set; }
     }
 }

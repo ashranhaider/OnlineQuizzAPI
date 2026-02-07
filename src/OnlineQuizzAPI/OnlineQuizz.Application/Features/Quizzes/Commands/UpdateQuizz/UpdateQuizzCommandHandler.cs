@@ -44,6 +44,7 @@ namespace OnlineQuizz.Application.Features.Quizzes.Commands.UpdateQuizz
             
             quizz.Name = request.Name;
             quizz.IsActive = request.IsActive;
+            quizz.TimeAllowed = request.TimeAllowed;
             quizz.LastModifiedBy = _loggedInUserService.UserId ?? "";
             quizz.LastModifiedDate = DateTime.UtcNow;
 

@@ -19,6 +19,11 @@ namespace OnlineQuizz.Application.Features.Quizzes.Commands.CreateQuizz
             
             RuleFor(q => q.IsActive)
                 .NotNull();
+
+            RuleFor(p => p.TimeAllowed)
+                .GreaterThan(0)
+                .When(p => p.TimeAllowed.HasValue)
+                .WithMessage("{PropertyName} must be greater than 0.");
         }
     }
 }

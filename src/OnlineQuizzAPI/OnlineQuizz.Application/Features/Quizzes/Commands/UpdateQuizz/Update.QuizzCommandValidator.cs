@@ -20,9 +20,14 @@ namespace OnlineQuizz.Application.Features.Quizzes.Commands.UpdateQuizz
                 .NotEmpty().WithMessage("{PropertyName} is required.")
                 .NotNull()
                 .MaximumLength(50).WithMessage("{PropertyName} must not exceed 50 characters.");
-            
+
             RuleFor(q => q.IsActive)
                 .NotNull();
+
+            RuleFor(p => p.TimeAllowed)
+                .GreaterThan(0)
+                .When(p => p.TimeAllowed.HasValue)
+                .WithMessage("{PropertyName} must be greater than 0.");
         }
     }
 }

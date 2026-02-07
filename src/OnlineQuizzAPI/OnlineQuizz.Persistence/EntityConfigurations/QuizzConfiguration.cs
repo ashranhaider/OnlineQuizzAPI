@@ -21,6 +21,9 @@ namespace OnlineQuizz.Persistence.EntityConfigurations
                    .IsRequired() // Make it required
                    .HasMaxLength(200); // Example max length for quiz name
 
+            builder.Property(qz => qz.TimeAllowed)
+                   .IsRequired(false);
+
             builder.Property(q => q.OwnerUserId)
                    .IsRequired()
                    .HasMaxLength(450);
