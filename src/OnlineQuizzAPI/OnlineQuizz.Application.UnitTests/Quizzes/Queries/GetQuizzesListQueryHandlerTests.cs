@@ -20,6 +20,7 @@ namespace OnlineQuizz.Application.UnitTests.Categories.Queries
         {
             _mockQuizzRepository = RepositoryMocks.GetQuizzRepository();
             _mockLoggedInUserService = new Mock<ILoggedInUserService>();
+            _mockLoggedInUserService.SetupGet(s => s.UserId).Returns("user-1");
 
             var configurationProvider = new MapperConfiguration(cfg =>
             {

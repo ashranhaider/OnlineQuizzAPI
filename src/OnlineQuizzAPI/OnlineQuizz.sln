@@ -33,6 +33,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineQuizz.API.Integration
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineQuizz.Persistence.IntegrationTests", "OnlineQuizz.Persistence.IntegrationTests\OnlineQuizz.Persistence.IntegrationTests.csproj", "{AF8102B8-F26F-4B20-9E90-659855B44A5D}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineQuizz.Api.UnitTests", "OnlineQuizz.Api.UnitTests\OnlineQuizz.Api.UnitTests.csproj", "{03579CA8-3840-4963-91EC-1AC07CCFC10A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineQuizz.Identity.UnitTests", "OnlineQuizz.Identity.UnitTests\OnlineQuizz.Identity.UnitTests.csproj", "{7E15F179-0DDB-4C53-A6F6-82A6363DCCAD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +79,14 @@ Global
 		{AF8102B8-F26F-4B20-9E90-659855B44A5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AF8102B8-F26F-4B20-9E90-659855B44A5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AF8102B8-F26F-4B20-9E90-659855B44A5D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03579CA8-3840-4963-91EC-1AC07CCFC10A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03579CA8-3840-4963-91EC-1AC07CCFC10A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03579CA8-3840-4963-91EC-1AC07CCFC10A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03579CA8-3840-4963-91EC-1AC07CCFC10A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E15F179-0DDB-4C53-A6F6-82A6363DCCAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E15F179-0DDB-4C53-A6F6-82A6363DCCAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E15F179-0DDB-4C53-A6F6-82A6363DCCAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E15F179-0DDB-4C53-A6F6-82A6363DCCAD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -93,6 +105,8 @@ Global
 		{133B5EC1-4435-4891-BCF1-6BAE82E0C0AF} = {86A43377-5453-4F67-A7BB-A61B63F393C7}
 		{E1FFEBEA-A6A8-44A3-BC90-7959E9C83ED2} = {86A43377-5453-4F67-A7BB-A61B63F393C7}
 		{AF8102B8-F26F-4B20-9E90-659855B44A5D} = {86A43377-5453-4F67-A7BB-A61B63F393C7}
+		{03579CA8-3840-4963-91EC-1AC07CCFC10A} = {86A43377-5453-4F67-A7BB-A61B63F393C7}
+		{7E15F179-0DDB-4C53-A6F6-82A6363DCCAD} = {86A43377-5453-4F67-A7BB-A61B63F393C7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {03CB975B-F3C6-4299-AE35-9AED6626EEA3}

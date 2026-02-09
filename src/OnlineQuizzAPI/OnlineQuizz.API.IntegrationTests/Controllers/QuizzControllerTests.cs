@@ -17,18 +17,20 @@ namespace OnlineQuizz.API.IntegrationTests.Controllers
         [Fact]
         public async Task ReturnsSuccessResult()
         {
-            var client = _factory.GetAnonymousClient();
+            var client = _factory.GetAuthenticatedClient();
 
-            var response = await client.GetAsync("/api/Quizz/all");
+            var response = await client.GetAsync("/api/quizzes");
 
             response.EnsureSuccessStatusCode();
 
             var responseString = await response.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
-            var result = JsonSerializer.Deserialize<List<GetQuizzVM>>(responseString);
-            
-            Assert.IsType<List<GetQuizzVM>>(result);
-            Assert.NotEmpty(result);
+            var result = JsonSerializer.Deserialize<GetQuizzVM>(responseString, options);
+
+            Assert.NotNull(result);
+            Assert.NotNull(result!.Quizzes);
+            Assert.NotEmpty(result.Quizzes);
         }
     }
 }

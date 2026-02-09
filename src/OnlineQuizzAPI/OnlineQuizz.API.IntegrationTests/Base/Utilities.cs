@@ -7,26 +7,41 @@ namespace OnlineQuizz.API.IntegrationTests.Base
     public class Utilities
     {
         public static void InitializeDbForTests(OnlineQuizzDbContext context)
-        {            
+        {
+            const string testUserId = "test-user-id";
+            var now = DateTime.UtcNow;
+
             context.Quizzes.Add(new Quizz
             {
                 Id = 1,
-                Name = "Concerts"
+                Name = "Concerts",
+                OwnerUserId = testUserId,
+                IsActive = true,
+                CreatedDate = now
             });
             context.Quizzes.Add(new Quizz
             {
                 Id = 2,
-                Name = "Musicals"
+                Name = "Musicals",
+                OwnerUserId = testUserId,
+                IsActive = true,
+                CreatedDate = now
             });
             context.Quizzes.Add(new Quizz
             {
                 Id = 3,
-                Name = "Plays"
+                Name = "Plays",
+                OwnerUserId = testUserId,
+                IsActive = true,
+                CreatedDate = now
             });
             context.Quizzes.Add(new Quizz
             {
                 Id = 4,
-                Name = "Conferences"
+                Name = "Conferences",
+                OwnerUserId = testUserId,
+                IsActive = true,
+                CreatedDate = now
             });
 
             context.SaveChanges();
