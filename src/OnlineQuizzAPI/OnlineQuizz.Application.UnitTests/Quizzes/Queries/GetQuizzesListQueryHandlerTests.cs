@@ -33,7 +33,7 @@ namespace OnlineQuizz.Application.UnitTests.Categories.Queries
         [Fact]
         public async Task GetQuizzesListTest()
         {
-            var handler = new GetQuizzesQueryHandler(_mapper, _mockQuizzRepository.Object, _mockLoggedInUserService.Object);
+            var handler = new GetQuizzesQueryHandler( _mockQuizzRepository.Object, _mockLoggedInUserService.Object);
 
             var result = await handler.Handle(new GetQuizzesQuery(), CancellationToken.None);
 

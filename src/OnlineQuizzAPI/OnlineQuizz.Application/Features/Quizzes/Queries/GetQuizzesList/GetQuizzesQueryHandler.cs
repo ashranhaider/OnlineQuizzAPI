@@ -1,29 +1,18 @@
-﻿using AutoMapper;
-using FluentValidation.Results;
 using MediatR;
 using OnlineQuizz.Application.Contracts;
 using OnlineQuizz.Application.Contracts.Persistence;
 using OnlineQuizz.Application.Exceptions;
-using OnlineQuizz.Application.Features.Quizzes.Commands.CreateQuizz;
 using OnlineQuizz.Application.Helpers;
-using OnlineQuizz.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OnlineQuizz.Application.Features.Quizzes.Queries.GetQuizzesList
 {
     public class GetQuizzesQueryHandler : IRequestHandler<GetQuizzesQuery, GetQuizzVM>
     {
         private readonly IQuizzRepository _quizzRepository;
-        private readonly IMapper _mapper;
         private readonly ILoggedInUserService _loggedInUserService;
 
-        public GetQuizzesQueryHandler(IMapper mapper, IQuizzRepository quizzRepository, ILoggedInUserService loggedInUserService)
+        public GetQuizzesQueryHandler(IQuizzRepository quizzRepository, ILoggedInUserService loggedInUserService)
         {
-            _mapper = mapper;
             _quizzRepository = quizzRepository;
             _loggedInUserService = loggedInUserService;
         }
@@ -33,9 +22,8 @@ namespace OnlineQuizz.Application.Features.Quizzes.Queries.GetQuizzesList
 
             var userId = _loggedInUserService.UserId ?? throw new AuthenticationFailedException("User not authenticated.");
 
-            var (items, total) = await _quizzRepository.GetPagedQuizzesWithCount(userId, request.Page, request.Size, cancellationToken);
-
-            var quizzes = _mapper.Map<List<QuizzVM>>(items);
+            var (quizzes, total) = await _quizzRepository.GetPagedQuizzesWithCount(userId, request.Page, request.Size, cancellationToken);
+            
             foreach (var quizz in quizzes)
             {
                 quizz.UniqueURL = QuizzUrlBuilder.Build(quizz.Id);

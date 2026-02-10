@@ -1,4 +1,5 @@
-﻿using OnlineQuizz.Domain.Entities;
+﻿using OnlineQuizz.Application.Features.Quizzes.Queries.GetQuizzesList;
+using OnlineQuizz.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,11 @@ namespace OnlineQuizz.Application.Contracts.Persistence
 {
     public interface IQuizzRepository : IAsyncRepository<Quizz>
     {        
-        Task<(List<Quizz>, int)> GetPagedQuizzesWithCount(string UserId, int? page, int? size, CancellationToken cancellationToken);
+        Task<(List<QuizzVM>, int)> GetPagedQuizzesWithCount(
+            string UserId,
+            int? page,
+            int? size,
+            CancellationToken cancellationToken);
         Task<int> GetTotalQuizzesCount(string userId, CancellationToken cancellationToken = default);
     }
 }

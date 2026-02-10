@@ -1,5 +1,6 @@
 ﻿using OnlineQuizz.Application.Contracts.Persistence;
 using OnlineQuizz.Domain.Entities;
+using OnlineQuizz.Application.Features.Quizzes.Queries.GetQuizzesList;
 using Moq;
 
 namespace OnlineQuizz.Application.UnitTests.Mocks
@@ -57,7 +58,17 @@ namespace OnlineQuizz.Application.UnitTests.Mocks
                         items = items.Skip((page.Value - 1) * size.Value).Take(size.Value);
                     }
 
-                    var list = items.ToList();
+                    var list = items
+                        .Select(q => new QuizzVM
+                        {
+                            Id = q.Id,
+                            Name = q.Name,
+                            TimeAllowed = q.TimeAllowed,
+                            IsActive = q.IsActive,
+                            TotalQuestionsCount = q.Questions?.Count ?? 0
+                        })
+                        .ToList();
+
                     return (list, categories.Count);
                 });
 

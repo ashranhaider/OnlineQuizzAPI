@@ -14,7 +14,7 @@ namespace OnlineQuizz.Domain.Entities
         public int? TimeAllowed { get; set; }
         public string OwnerUserId { get; set; } = String.Empty;
         public bool IsActive { get; set; }
-        public virtual ICollection<Question>? Questions { get; set; }
-        public virtual ICollection<Attempt>? Attempts { get; set; }
+        public ICollection<Question> Questions { get; private set; } = new List<Question>();
+        public ICollection<Attempt> Attempts { get; private set; } = new List<Attempt>();
     }
 }

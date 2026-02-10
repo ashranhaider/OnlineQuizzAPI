@@ -20,5 +20,6 @@ namespace OnlineQuizz.Application.Features.Quizzes.Queries.GetQuizzesList
         public string UniqueURL { get; set; } = String.Empty;
         public int? TimeAllowed { get; set; }
         public bool IsActive { get; set; }
+        public int TotalQuestionsCount { get; set; }
     }
 }
