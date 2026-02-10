@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using OnlineQuizz.Domain.Entities;
 using OnlineQuizz.Domain.Enums;
+using OnlineQuizz.Application.Features.QuestionOptions.Commands.CreateQuestionOption;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -18,5 +19,6 @@ namespace OnlineQuizz.Application.Features.QuizzQuestions.Commands.Create
         public double Score { get; set; }
         //public byte[] QuestionImage { get; set; } = new byte[0];
         public int QuizzId { get; set; }
+        public List<CreateQuestionOptionCommand>? QuestionOptions { get; set; }
     }
 }

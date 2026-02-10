@@ -18,5 +18,14 @@ namespace OnlineQuizz.Application.Features.QuizzQuestions.Commands.Update
         public bool IsActive { get; set; }
         public double Score { get; set; }
         public int QuizzId { get; set; }
+        public List<UpsertQuestionOptionDto>? QuestionOptions { get; set; }
+    }
+
+    public class UpsertQuestionOptionDto
+    {
+        public int? Id { get; set; }
+        public string OptionText { get; set; } = "";
+        public bool IsCorrect { get; set; }
+        public byte[]? OptionImage { get; set; }
     }
 }

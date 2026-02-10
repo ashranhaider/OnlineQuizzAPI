@@ -69,10 +69,10 @@ namespace OnlineQuizz.Api.Controllers
             await _mediator.Send(updateQuestionOptionCommand);
             return Ok();
         }
-        [HttpDelete("Question/QuestionOption", Name = "DeleteQuestionOption")]
-        public async Task<ActionResult<int>> DeleteQuestionOption([FromBody] DeleteQuestionOptionCommand deleteQuestionOptionCommand)
+        [HttpDelete("Question/QuestionOption/{id}", Name = "DeleteQuestionOption")]
+        public async Task<ActionResult<int>> DeleteQuestionOption([FromRoute] int id)
         {
-            await _mediator.Send(deleteQuestionOptionCommand);
+            await _mediator.Send(new DeleteQuestionOptionCommand { Id = id});
             return NoContent();
         }
         #endregion
